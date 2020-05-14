@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper    
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"    
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.demo.truck.dao.OwnerDao">
+	<insert id="saveOwner" parameterType="com.demo.truck.entity.Owner"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO
+		owner_info(ownerName,idNo,telephone,homeAddress,presentAddress,remark,createUser,lastUpdateUser,
+		createTime,lastUpdateTime,optCounter,companyCode)
+		VALUES
+		(#{ownerName},#{idNo},#{telephone},#{homeAddress},#{presentAddress},#{remark},#{createUser},#{lastUpdateUser},
+		#{createTime},#{lastUpdateTime},#{optCounter},#{companyCode})
+	</insert>
+	<sql id="condition">
+		where isDel = 0
+		<if test="companyCode!=null and companyCode!=''">
+			and companyCode=#{companyCode}
+		</if>
+		<if test="ownerName!=null and ownerName!=''">
+			and ownerName like CONCAT('%',#{ownerName},'%')
+		</if>
+		<if test="idNo!=null and idNo!=''">
+			and idNo like CONCAT('%',#{idNo},'%')
+		</if>
+		<if test="telephone!=null and telephone!=''">
+			and telephone like CONCAT('%',#{telephone},'%')
+		</if>
+	</sql>
+   
+	<select id="findOwnerList" parameterType="com.demo.truck.bean.OwnerQueryBean"
+		resultType="com.demo.truck.entity.Owner">
+		SELECT
+		id,ownerName,idNo,homeAddress,homeAddress,presentAddress,telephone,remark
+		FROM owner_info
+		<include refid="condition" />
+		LIMIT #{start} ,#{length}
+	</select>
+
+	<select id="findOwnerListCount" parameterType="com.demo.truck.bean.OwnerQueryBean"
+		resultType="int">
+		SELECT
+		count(id)
+		FROM owner_info
+		<include refid="condition" />
+	</select>
+
+	<select id="findOwnerById" resultType="com.demo.truck.entity.Owner">
+		SELECT
+		id,ownerName,idNo,homeAddress,homeAddress,presentAddress,telephone,remark
+		FROM owner_info WHERE id=#{id} 
+	</select>
+    <update id="updateOwner" parameterType="com.demo.truck.entity.Owner">
+    UPDATE owner_info
+    SET ownerName=#{ownerName},
+    telephone=#{telephone},
+    homeAddress=#{homeAddress},
+    presentAddress=#{presentAddress},
+    remark=#{remark}
+    WHERE id=#{id}
+    </update>
+ 
+
+</mapper>

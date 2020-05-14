@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper    
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"    
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.demo.truck.dao.CarInfoDao">
+
+	<insert id="saveCarInfo" parameterType="com.demo.truck.entity.CarInfo"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO
+		car_info(carNo,brand,runNo,tonnage,cardColor,isDel,status,remark,createUser,lastUpdateUser,
+		createTime,lastUpdateTime,optCounter,companyCode)
+		VALUES
+		(#{carNo},#{brand},#{runNo},#{tonnage},#{cardColor},0,#{status},#{remark},#{createUser},#{lastUpdateUser},
+		#{createTime},#{lastUpdateTime},#{optCounter},#{companyCode})
+	</insert>
+	<sql id="condition">
+		where car.isDel=0
+		<if test="companyCode!=null and companyCode!=''">
+			and car.companyCode =#{companyCode}
+		</if>
+		<if test="status !=null">
+			And car.status=#{status}
+		</if>
+		<if test="ownerName !=null and ownerName!='' ">
+			And ownerName like CONCAT('%',#{ownerName},'%')
+		</if>
+		<if test="brand !=null and brand!='' ">
+			And brand like CONCAT('%',#{brand},'%')
+		</if>
+		<if test="tonnage !=null and tonnage!='' ">
+			And tonnage=#{tonnage}
+		</if>
+		<if test="cardColor !=null and cardColor!='' ">
+			And cardColor=#{cardColor}
+		</if>
+	</sql>
+	<select id="findCarInfoList" parameterType="com.demo.truck.bean.CarInfoQueryBean"
+		resultType="com.demo.truck.bean.CarInfoBean">
+		SELECT
+		car.id,
+		carNo,
+		brand,
+		tonnage,
+		cardColor,
+		ownerName,
+		car.status,
+		car.companyCode
+		FROM car_info car
+		LEFT JOIN car_owner_ref ref ON
+		ref.carId = car.id
+		LEFT JOIN owner_info owner ON ref.ownerId = owner.id
+		<include refid="condition" />
+		LIMIT #{start} ,#{length}
+	</select>
+	<select id="findCarInfoListCount" parameterType="com.demo.truck.bean.CarInfoQueryBean"
+		resultType="int">
+		SELECT
+		count(car.id)
+		FROM car_info car
+		LEFT JOIN car_owner_ref ref ON
+		ref.carId = car.id
+		LEFT JOIN owner_info owner ON ref.ownerId = owner.id
+		<include refid="condition" />
+	</select>
+	<resultMap type="com.demo.truck.Dto.CarInfoDto" id="carInfoDtoMap">
+		<id column="id" property="id" />
+		<association property="carInfo" javaType="com.demo.truck.entity.CarInfo">
+			<id column="carId" property="id" />
+			<result column="carNo" property="carNo" />
+			<result column="brand" property="brand" />
+			<result column="tonnage" property="tonnage" />
+			<result column="cardColor" property="cardColor" />
+			<result column="runNo" property="runNo" />
+			<result column="carStatus" property="status" />
+			<result column="companyCode" property="companyCode" />
+		</association>
+		<association property="owner" javaType="com.demo.truck.entity.Owner">
+			<id column="ownerId" property="id" />
+			<result column="ownerName" property="ownerName" />
+			<result column="idNo" property="idNo" />
+			<result column="telephone" property="telephone" />
+			<result column="homeAddress" property="homeAddress" />
+			<result column="presentAddress" property="presentAddress" />
+			<result column="ownerRemark" property="remark" />
+		</association>
+	</resultMap>
+	<select id="findCarInfoDtoById" resultMap="carInfoDtoMap">
+		SELECT
+		ref.id,
+		car.id
+		carId,
+		carNo,
+		brand,
+		tonnage,
+		cardColor,
+		runNo,
+		owner.id ownerId,
+		ownerName,
+		idNo,
+		telephone,
+		homeAddress,
+		presentAddress,
+		owner.remark ownerRemark,
+		car.status carStatus,
+		car.companyCode
+		FROM
+		car_info car
+		LEFT JOIN
+		car_owner_ref ref ON
+		ref.carId = car.id
+		LEFT JOIN
+		owner_info
+		owner ON
+		ref.ownerId = owner.id
+		WHERE car.id=#{id}
+	</select>
+	<resultMap type="com.demo.truck.bean.CarInfoDetailBean" id="carInfoDetailMap">
+		<id column="id" property="id" />
+		<result column="carNo" property="carNo" />
+		<result column="brand" property="brand" />
+		<result column="tonnage" property="tonnage" />
+		<result column="cardColor" property="cardColor" />
+		<result column="carStatus" property="status" />
+		<result column="runNo" property="runNo" />
+		<association property="owner" javaType="com.demo.truck.entity.Owner">
+			<id column="ownerId" property="id" />
+			<result column="ownerName" property="ownerName" />
+			<result column="idNo" property="idNo" />
+			<result column="telephone" property="telephone" />
+			<result column="homeAddress" property="homeAddress" />
+			<result column="presentAddress" property="presentAddress" />
+			<result column="ownerRemark" property="remark" />
+		</association>
+		<collection property="guaranteeRecordList" ofType="com.demo.truck.bean.GuaranteeBean">
+			<id column="guaranteeId" property="id" />
+			<result column="guaranteeNo" property="guaranteeNo" />
+			<result column="commercialInsuranceFrom" property="commercialInsuranceFrom" />
+			<result column="commercialInsurancePremium" property="commercialInsurancePremium" />
+			<result column="transactor" property="transactor" />
+			<result column="guaranteeRemark" property="remark" />
+		</collection>
+		<collection property="compesationRecordlist"
+			ofType="com.demo.truck.bean.CompesationRecordBean">
+			<id column="compesationId" property="id" />
+			<result column="claimAdjuster" property="claimAdjuster" />
+			<result column="claimTime" property="claimTime" />
+			<result column="claimAmount" property="claimAmount" />
+			<result column="compesationRemark" property="remark" />
+		</collection>
+		<collection property="carValidateRecordList"
+			ofType="com.demo.truck.bean.CarValidateRecordBean">
+			<id column="valideId" property="id" />
+			<result column="validateTime" property="validateTime" />
+			<result column="validateType" property="validateType" />
+			<result column="valideRemark" property="remark" />
+		</collection>
+	</resultMap>
+	<select id="findCarInfoDetailById" resultMap="carInfoDetailMap">
+		SELECT
+		car.id,
+		carNo,
+		brand,
+		tonnage,
+		cardColor,
+		runNo,
+		car.status carStatus,
+		OWNER .id
+		ownerId,
+		ownerName,
+		idNo,
+		telephone,
+		homeAddress,
+		presentAddress,
+		OWNER.remark ownerRemark,
+		car. STATUS carStatus,
+		car.companyCode,
+		guarantee.id guaranteeId,
+		guarantee.guaranteeNo,
+		guarantee.commercialInsuranceFrom,
+		guarantee.commercialInsurancePremium,
+		guarantee.transactor,
+		guarantee.remark guaranteeRemark,
+		compesation.id compesationId,
+		compesation.claimTime,
+		compesation.claimAdjuster,
+		compesation.claimAmount,
+		compesation.remark compesationRemark,
+		valide.id valideId,
+		valide.validateTime validateTime,
+		valide.validateType,
+		valide.remark valideRemark
+		FROM
+		car_info car
+		LEFT
+		JOIN car_owner_ref ref ON ref.carId = car.id
+		LEFT JOIN owner_info OWNER
+		ON ref.ownerId = OWNER .id
+		LEFT JOIN car_guarantee_ref guaranteeRef ON
+		guaranteeRef.carId = car.id
+		LEFT JOIN guarantee_info guarantee ON
+		guarantee.id =
+		guaranteeRef.guaranteeId
+		LEFT JOIN car_compesation_record
+		compesation ON compesation.carId = car.id
+		LEFT JOIN car_valide_record
+		valide ON valide.carId = car.id
+		WHERE car.id=#{id}
+		ORDER BY
+		guarantee.commercialInsuranceFrom DESC,claimTime DESC,validateTime
+		DESC
+	</select>
+
+	<update id="updateCarInfo" parameterType="com.demo.truck.Dto.CarInfoDto">
+		UPDATE car_info
+		SET
+		status=#{carInfo.status},
+		carNo=#{carInfo.carNo},
+		cardColor=#{carInfo.cardColor},
+		brand=#{carInfo.brand},
+		runNo=#{carInfo.runNo},
+		tonnage=#{carInfo.tonnage},
+		companyCode=#{carInfo.companyCode}
+		WHERE id=#{carInfo.id}
+	</update>
+	<select id="findCarByCarNo" parameterType="com.demo.truck.entity.CarInfo"
+		resultType="com.demo.truck.entity.CarInfo">
+		SELECT id,carNo,brand,runNo,tonnage,cardColor,status FROM car_info
+		WHERE carNo =#{carNo}
+		<if test="id!=null and id!='' ">
+			AND id!=#{id}
+		</if>
+	</select>
+
+</mapper>

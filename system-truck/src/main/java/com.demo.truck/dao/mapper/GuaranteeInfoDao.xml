@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper    
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"    
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.demo.truck.dao.GuaranteeInfoDao">
+  
+	<insert id="savaGuaranteeInfo" parameterType="com.demo.truck.Dto.GuaranteeInfoDto"
+		useGeneratedKeys="true" keyProperty="guaranteeId">
+		INSERT INTO
+		guarantee_info
+		(guaranteeNo,commercialInsuranceFrom,commercialInsuranceTo,commercialInsuranceCoverage,compulsoryInsuranceFrom,
+		compulsoryInsuranceTo,commercialInsurancePremium,compulsoryInsurancePremium,travelTax,verifiyCreditCost,
+		totalCost,isDel,status,transactor,remark,
+		createUser,lastUpdateUser,createTime,lastUpdateTime,optCounter,companyCode)
+		VALUES
+		(#{guaranteeNo},#{commercialInsuranceFrom},#{commercialInsuranceTo},#{commercialInsuranceCoverage},#{compulsoryInsuranceFrom},
+		#{compulsoryInsuranceTo},#{commercialInsurancePremium},#{compulsoryInsurancePremium},#{travelTax},#{verifiyCreditCost},
+		#{totalCost},0,#{status},#{transactor},#{remark},
+		#{createUser},#{lastUpdateUser},#{createTime},#{lastUpdateTime},#{optCounter},#{companyCode})
+	</insert>
+
+	<sql id="condition">
+		where guarantee.isDel=0
+		<if test="companyCode!=null and companyCode!=''">
+			and guarantee.companyCode =#{companyCode}
+		</if>
+		<if test="status !=null">
+			And guarantee.status=#{status}
+		</if>
+		<if test="ownerName!=null and ownerName!=''">
+			and ownerName like CONCAT('%',#{ownerName},'%')
+		</if>
+		<if test="guaranteeNo !=null and guaranteeNo!='' ">
+			And guaranteeNo like CONCAT('%',#{guaranteeNo},'%')
+		</if>
+		<if test="carNo!=null and carNo!=''">
+			and carNo like CONCAT('%',#{carNo},'%')
+		</if>
+		<if test="commercialInsuranceFrom !=null">
+			And commercialInsuranceFrom
+			&gt;=#{commercialInsuranceFrom}
+		</if>
+		<if test="insuranceExpireFrom !=null">
+			And commercialInsuranceTo
+			&gt;=#{insuranceExpireFrom}
+		</if>
+		<if test="insuranceExpireTo !=null">
+			And commercialInsuranceTo
+			&lt;=#{insuranceExpireTo}
+		</if>
+		<if test="quickType !=null and quickType == 1">
+		    And commercialInsuranceTo BETWEEN  CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY)
+		</if>
+		<if test="quickType !=null and quickType == 2">
+			And commercialInsuranceTo BETWEEN  CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+		</if>
+		<if test="quickType !=null and quickType == 3">
+			And  DATE_FORMAT( commercialInsuranceTo, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
+		</if>
+	</sql>
+
+	<select id="findGuaranteeList" parameterType="com.demo.truck.bean.GuaranteeQueryBean"
+		resultType="com.demo.truck.bean.GuaranteeBean">
+		SELECT
+		guarantee.id,
+		guaranteeNo,
+		carNo,
+		ownerName,
+		commercialInsuranceFrom,
+		commercialInsuranceTo,
+		guarantee. STATUS,
+		guarantee.companyCode
+		FROM guarantee_info guarantee
+		LEFT JOIN car_guarantee_ref ref ON ref.guaranteeId = guarantee.id
+		LEFT JOIN car_info car ON car.id = ref.carId
+		LEFT JOIN car_owner_ref COR ON COR.carId = car.Id
+		LEFT JOIN owner_info owner ON owner.id = COR.ownerId
+		<include refid="condition" />
+		ORDER BY commercialInsuranceFrom DESC
+		LIMIT #{start} ,#{length}
+	</select>
+	<select id="findGuaranteeListCount" parameterType="com.demo.truck.bean.GuaranteeQueryBean"
+		resultType="int">
+		SELECT count(guarantee.id)
+		FROM guarantee_info guarantee
+		LEFT JOIN
+		car_guarantee_ref ref ON ref.guaranteeId = guarantee.id
+		LEFT JOIN
+		car_owner_ref COR ON COR.carId = ref.carId
+		LEFT JOIN car_info car ON
+		car.id = COR.carId
+		LEFT JOIN owner_info owner ON owner.id =COR.ownerId
+		<include refid="condition" />
+	</select>
+
+	<resultMap type="com.demo.truck.Dto.GuaranteeInfoDto" id="guaranteeDetailMap">
+		<id column="id" property="guaranteeId" />
+		<result column="guaranteeNo" property="guaranteeNo" />
+		<result column="commercialInsuranceFrom" property="commercialInsuranceFrom" />
+		<result column="commercialInsuranceTo" property="commercialInsuranceTo" />
+		<result column="commercialInsuranceCoverage" property="commercialInsuranceCoverage" />
+		<result column="commercialInsurancePremium" property="commercialInsurancePremium" />
+		<result column="compulsoryInsuranceFrom" property="compulsoryInsuranceFrom" />
+		<result column="compulsoryInsuranceTo" property="compulsoryInsuranceTo" />
+		<result column="compulsoryInsurancePremium" property="compulsoryInsurancePremium" />
+		<result column="travelTax" property="travelTax" />
+		<result column="verifiyCreditCost" property="verifiyCreditCost" />
+		<result column="totalCost" property="totalCost" />
+		<result column="transactor" property="transactor" />
+		<result column="guaranteeStatus" property="status" />
+		<result column="guaranteeRemark" property="remark" />
+		<result column="companyCode" property="companyCode" />
+
+		<association property="carInfo" javaType="com.demo.truck.entity.CarInfo">
+			<id column="carId" property="id" />
+			<result column="carNo" property="carNo" />
+			<result column="brand" property="brand" />
+			<result column="tonnage" property="tonnage" />
+			<result column="runNo" property="runNo" />
+			<result column="cardColor" property="cardColor" />
+			<result column="carStatus" property="status" />
+		</association>
+		<association property="owner" javaType="com.demo.truck.entity.Owner">
+			<id column="ownerId" property="id" />
+			<result column="ownerName" property="ownerName" />
+			<result column="idNo" property="idNo" />
+			<result column="telephone" property="telephone" />
+			<result column="homeAddress" property="homeAddress" />
+			<result column="presentAddress" property="presentAddress" />
+			<result column="ownerRemark" property="remark" />
+		</association>
+	</resultMap>
+	<select id="findGuaranteeDetailById" resultMap="guaranteeDetailMap">
+		SELECT
+		guarantee.id,
+		guaranteeNo,
+		COR.carId carId,
+		carNo,
+		brand,
+		tonnage,
+		runNo,
+		cardColor,
+		car.status carStatus,
+		owner.id ownerId,
+		ownerName,
+		idNo,
+		telephone,
+		homeAddress,
+		presentAddress,
+		owner.remark ownerRemark,
+		commercialInsuranceFrom,
+		commercialInsuranceTo,
+		commercialInsuranceCoverage,
+		commercialInsurancePremium,
+		compulsoryInsuranceFrom,
+		compulsoryInsuranceTo,
+		compulsoryInsurancePremium,
+		travelTax,
+		verifiyCreditCost,
+		totalCost,
+		transactor,
+		guarantee.status
+		guaranteeStatus,
+		guarantee.remark guaranteeRemark,
+		guarantee.companyCode
+		FROM guarantee_info guarantee
+		LEFT JOIN
+		car_guarantee_ref ref ON ref.guaranteeId = guarantee.id
+		LEFT JOIN
+		car_owner_ref COR ON COR.carId = ref.carId
+		LEFT JOIN car_info car ON
+		car.id = COR.carId
+		LEFT JOIN owner_info OWNER ON OWNER .id =
+		COR.ownerId
+		WHERE guarantee.id =#{guaranteeId}
+	</select>
+	<update id="updateGuaranteeInfo" parameterType="com.demo.truck.Dto.GuaranteeInfoDto">
+		UPDATE
+		guarantee_info
+		set guaranteeNo = #{guaranteeNo},
+		commercialInsuranceFrom=#{commercialInsuranceFrom},
+		commercialInsuranceTo=#{commercialInsuranceTo},
+		commercialInsuranceCoverage=#{commercialInsuranceCoverage},
+		compulsoryInsuranceFrom=#{compulsoryInsuranceFrom},
+		compulsoryInsuranceTo=#{compulsoryInsuranceTo},
+		commercialInsurancePremium=#{commercialInsurancePremium},
+		compulsoryInsurancePremium=#{commercialInsurancePremium},
+		travelTax=#{travelTax},
+		verifiyCreditCost=#{verifiyCreditCost},
+		totalCost=#{totalCost},
+		status=#{status},
+		transactor=#{transactor},
+		remark=#{remark}
+		WHERE id=#{guaranteeId}
+	</update> 
+</mapper>

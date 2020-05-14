@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper    
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"    
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.demo.truck.dao.CarGuaranteeRefDao">
+
+	<insert id="saveCarGuaranteeRef" parameterType="com.demo.truck.Dto.GuaranteeInfoDto"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO
+		car_guarantee_ref(carId,guaranteeId,isDel,createUser,lastUpdateUser,createTime,lastUpdateTime,optCounter,companyCode)
+		VALUES
+		(#{carInfo.id},#{guaranteeId},0,#{createUser},#{lastUpdateUser},#{createTime},#{lastUpdateTime},#{optCounter},#{companyCode})
+	</insert>
+  
+</mapper>

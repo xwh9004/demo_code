@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper    
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"    
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.demo.truck.dao.OrgDao">
+	<insert id="saveOrg" parameterType="com.demo.truck.entity.OrgInfo"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO
+		org_info(parentId,orgName,orgCode,orgType,orgDesc,isDel,createUser,lastUpdateUser,
+		createTime,lastUpdateTime,optCounter,companyCode)
+		VALUES
+		(#{parentId},#{orgName},#{orgCode},#{orgType},#{orgDesc},0,#{createUser},#{lastUpdateUser},
+		#{createTime},#{lastUpdateTime},#{optCounter},#{companyCode})
+	</insert>
+	<delete id="deleteOrgByPid">
+		DROP FUNCTION IF EXISTS queryChildrens;
+		CREATE FUNCTION queryChildrens (areaId INT)
+		RETURNS VARCHAR(4000)
+		BEGIN
+		DECLARE sTemp VARCHAR(4000);
+		DECLARE sTempChd VARCHAR(4000);
+		SET sTemp = '$';
+		SET sTempChd = cast(areaId as char);
+		WHILE sTempChd is not NULL DO
+		SET sTemp = CONCAT(sTemp,',',sTempChd);
+		SELECT group_concat(id) INTO sTempChd FROM org_info where
+		FIND_IN_SET(parentId,sTempChd)>0;
+		END WHILE;
+		return sTemp;
+		END;
+		DELETE FROM org_info WHERE FIND_IN_SET(parentId,queryChildrens(#{0}));
+	</delete>
+	<delete id="deleteOrgById">
+		DELETE FROM org_info WHERE id = #{0};
+	</delete>
+	<select id="findChildsBy" resultType="com.demo.truck.entity.OrgInfo">
+		SELECT id,parentId,orgName,orgDesc,orgCode,orgType FROM org_info WHERE
+		<if test="parentId==null">
+			parentId IS null
+		</if>
+		<if test="parentId!=null">
+			parentId=#{parentId}
+		</if>
+	</select>
+
+</mapper>

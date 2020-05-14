@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper    
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"    
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.demo.truck.dao.CarCompesationRecordDao">
+	<insert id="addCompesationRecords" >
+		INSERT INTO
+		car_compesation_record
+		(carId,claimAdjuster,claimAmount,claimTime,isDel,remark,createUser,lastUpdateUser,
+		createTime,lastUpdateTime,optCounter,companyCode)
+		VALUES
+		<foreach collection="recordList" item="item" index="index"
+			separator=",">
+			(#{carId},#{item.claimAdjuster},#{item.claimAmount},#{item.claimTime},0,#{item.remark},#{item.createUser},#{item.lastUpdateUser},
+			#{item.createTime},#{item.lastUpdateTime},#{item.optCounter},#{item.companyCode})
+		</foreach>
+	</insert>
+	 
+</mapper>

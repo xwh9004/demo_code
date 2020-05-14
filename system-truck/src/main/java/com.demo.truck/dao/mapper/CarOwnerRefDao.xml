@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper    
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"    
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.demo.truck.dao.CarOwnerRefDao">
+	<insert id="saveCarOwnerRef" parameterType="com.demo.truck.Dto.CarInfoDto"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO
+		car_owner_ref(ownerId,carId,isDel,createUser,createTime,lastUpdateUser,lastUpdateTime,optCounter,companyCode)
+		VALUES
+		(#{owner.id},#{carInfo.id},0,#{createUser},#{createTime},#{lastUpdateUser},#{lastUpdateTime},#{optCounter},#{companyCode})
+	</insert>
+
+	<update id="updateCarOwnerRef" parameterType="com.demo.truck.Dto.CarInfoDto">
+	UPDATE car_owner_ref
+	SET
+	ownerId=#{owner.id}
+	WHERE carId=#{carInfo.id}
+	</update>
+  
+ 
+</mapper>
