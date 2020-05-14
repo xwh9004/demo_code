@@ -49,7 +49,7 @@
 	<bean id="lazySqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="mysql_truck_dataSource"></property>
 		 <property name="configLocation" value="classpath:/mybatis-config.xml"></property>
-		<property name="mapperLocations" value="classpath*:com/demo/truck/dao/mapper/*.xml"></property>
+		<property name="mapperLocations" value="classpath*:com.demo.truck/dao/**/*.xml"></property>
 	</bean>
 
 	<!-- 配置mybatis 的mapper扫描器 -->
