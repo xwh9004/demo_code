@@ -25,6 +25,8 @@ public class NioServer {
 
     private StringBuilder message = new StringBuilder();
 
+     private  ByteBuffer buffer = ByteBuffer.allocate(1024);
+
     public static void main(String[] args) throws IOException {
         NioServer server = new NioServer();
         server.initServer(8090);
@@ -116,16 +118,15 @@ public class NioServer {
 
     private void doRead(SelectionKey selectionKey) throws IOException {
         SocketChannel client = (SocketChannel) selectionKey.channel();
-        ByteBuffer receivebuffer = ByteBuffer.allocate(1024);
         // 返回为之创建此键的通道。
         client = (SocketChannel) selectionKey.channel();
         //将缓冲区清空以备下次读取
-        receivebuffer.clear();
+        buffer.clear();
         //读取服务器发送来的数据到缓冲区中
         message.setLength(0);
-        int count = client.read(receivebuffer);
+        int count = client.read(buffer);
         if (count > 0) {
-            String receiveText = new String(receivebuffer.array(), 0, count);
+            String receiveText = new String(buffer.array(), 0, count);
             message.append(receiveText);
 
         }
@@ -137,6 +138,7 @@ public class NioServer {
         System.out.println("server doConnect");
     }
 
+    //建立连接的时候触发
     private void doAccept(SelectionKey selectionKey) throws IOException {
 
         SocketChannel socketChannel = ((ServerSocketChannel) selectionKey.channel()).accept();

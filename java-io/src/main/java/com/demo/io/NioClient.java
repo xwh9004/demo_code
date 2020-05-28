@@ -1,17 +1,13 @@
 package com.demo.io;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Scanner;
-import java.util.Set;
 
 /**
  * <p><b>Description:</b>
@@ -28,7 +24,7 @@ public class NioClient {
 
     SocketChannel client;
 
-    ByteBuffer receivebuffer = ByteBuffer.allocate(1024);
+    ByteBuffer buffer = ByteBuffer.allocate(1024);
 
     public static void main(String[] args) throws IOException {
         NioClient client = new NioClient();
@@ -81,14 +77,14 @@ public class NioClient {
         client = (SocketChannel) selectionKey.channel();
         // 判断此通道上是否正在进行连接操作。
         // 完成套接字通道的连接过程。
-        receivebuffer.clear();
+        buffer.clear();
         if (client.isConnectionPending()) {
             client.finishConnect();
-            int len = client.read(receivebuffer);
+            int len = client.read(buffer);
             while(len>0){
-                String  receiveText = new String(receivebuffer.array(), 0, len);
+                String  receiveText = new String(buffer.array(), 0, len);
                 System.out.println("from server --:" + receiveText);
-                len = client.read(receivebuffer);
+                len = client.read(buffer);
             }
             System.out.println("server connected!");
             client.write(ByteBuffer.wrap(new String("Hello Server!").getBytes("UTF-8")));
@@ -96,24 +92,25 @@ public class NioClient {
         client.register(selector, SelectionKey.OP_READ);
     }
 
+    //在服务端有效
     private void doAccept(SelectionKey selectionKey) throws IOException {
         System.out.println("client doAccept");
     }
 
     private void doRead(SelectionKey selectionKey) throws IOException {
         SocketChannel server = (SocketChannel) selectionKey.channel();
-        ByteBuffer receivebuffer = ByteBuffer.allocate(1024);
+
         // 返回为之创建此键的通道。
         server = (SocketChannel) selectionKey.channel();
         //将缓冲区清空以备下次读取
-        receivebuffer.clear();
+        buffer.clear();
         //读取服务器发送来的数据到缓冲区中
         StringBuilder sb =  new StringBuilder();
-        int count = server.read(receivebuffer);
+        int count = server.read(buffer);
         while (count > 0) {
-            String  receiveText = new String(receivebuffer.array(), 0, count);
+            String  receiveText = new String(buffer.array(), 0, count);
             sb.append(receiveText);
-            count = server.read(receivebuffer);
+            count = server.read(buffer);
         }
         System.out.println("from server:" + sb.toString());
         server.register(selector, SelectionKey.OP_WRITE);
@@ -125,7 +122,9 @@ public class NioClient {
         System.out.println("client send:");
         String message =scanner.nextLine();
         client = (SocketChannel) selectionKey.channel();
-        client.write(ByteBuffer.wrap(new String(message).getBytes("UTF-8")));
+        buffer.clear();
+        buffer.put(new String(message).getBytes("UTF-8"));
+        client.write(buffer);
         //注册selector
         client.register(selectionKey.selector(), SelectionKey.OP_READ);
     }
