@@ -16,7 +16,7 @@ import java.util.Set;
  * @classNmae RedisClient
  */
 @Slf4j
-public class RedisClient {
+public class RedisClient implements RedisCommand {
 
     private static final String SEPARATOR = "\r\n";
 
@@ -28,52 +28,54 @@ public class RedisClient {
         connection = new RedisConnection(host, port);
     }
 
-    public String get(String key) {
-        String command = RedisCommand.build(RedisCommand.GET, key);
-        String response = connection.sendCommand(command);
-        return (String)parseResp(response);
-    }
+//    public String get(String key) {
+//        String command = RedisCommand.build(RedisCommand.GET, key);
+//        String response = connection.sendCommand(command);
+//        return (String)parseResp(response);
+//    }
+//
+//
+//    public Set<String> keys(String pattern) {
+//        String command = RedisCommand.build(RedisCommand.KEYS, pattern);
+//        String response = connection.sendCommand(command);
+//        return (Set<String>)parseResp(response);
+//    }
+//
+//
+//
+//    /**
+//     * 这是key-value 键值对
+//     *
+//     * @param key
+//     * @param value
+//     * @return
+//     */
+//    public String set(String key, String value) {
+//        String command = RedisCommand.build(RedisCommand.SET, value);
+//        String response = connection.sendCommand(command);
+//        return (String)parseResp(response);
+//    }
+//
+//    ;
+//
+//    /**
+//     * 连接ping测试
+//     * 返回 PONG 连接成功
+//     *
+//     * @return
+//     */
+//    public String ping() {
+//        String command = RedisCommand.build(RedisCommand.PING);
+//        String response = connection.sendCommand(command);
+//        try {
+//            connection.close();
+//        } catch (IOException e) {
+//            log.error("redis connection unable closed ");
+//        }
+//        return (String)parseResp(response);
+//    }
 
 
-    public Set<String> keys(String pattern) {
-        String command = RedisCommand.build(RedisCommand.KEYS, pattern);
-        String response = connection.sendCommand(command);
-        return (Set<String>)parseResp(response);
-    }
-
-
-
-    /**
-     * 这是key-value 键值对
-     *
-     * @param key
-     * @param value
-     * @return
-     */
-    public String set(String key, String value) {
-        String command = RedisCommand.build(RedisCommand.SET, value);
-        String response = connection.sendCommand(command);
-        return (String)parseResp(response);
-    }
-
-    ;
-
-    /**
-     * 连接ping测试
-     * 返回 PONG 连接成功
-     *
-     * @return
-     */
-    public String ping() {
-        String command = RedisCommand.build(RedisCommand.PING);
-        String response = connection.sendCommand(command);
-        try {
-            connection.close();
-        } catch (IOException e) {
-            log.error("redis connection unable closed ");
-        }
-        return (String)parseResp(response);
-    }
 
     private Object parseResp(String response) {
         char prefix = response.charAt(0);
@@ -165,7 +167,7 @@ public class RedisClient {
      */
     private String parseErrorString(String resp) {
         String result = null;
-        result = resp.substring(0, resp.length() - 2);
+        result = resp.substring(1, resp.length() - 2);
         return result;
     }
 
@@ -181,4 +183,13 @@ public class RedisClient {
         return result;
     }
 
+    @Override
+    public String ping(String message) {
+        return null;
+    }
+
+    @Override
+    public String get(String key) {
+        return null;
+    }
 }

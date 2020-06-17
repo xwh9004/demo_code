@@ -4,8 +4,10 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
@@ -19,13 +21,17 @@ import java.nio.charset.StandardCharsets;
  * @classNmae Connection
  */
 @Slf4j
-public class RedisConnection {
+public class RedisConnection implements Closeable {
 
     private String host = "localhost";
 
     private int port = 6379;
 
     private Socket socket;
+
+    private InputStream inputStream;
+
+    private OutputStream outputStream;
 
 
     public RedisConnection(String host, int port) {
@@ -48,6 +54,7 @@ public class RedisConnection {
         }
     }
 
+    @Override
     public void close() throws IOException {
         if (!socket.isClosed()) {
             socket.close();
@@ -55,18 +62,18 @@ public class RedisConnection {
     }
 
     public String sendCommand(String command) {
-        byte[] outBytes =command.getBytes(StandardCharsets.UTF_8);
-        int buffSize =1024;
+        byte[] outBytes = command.getBytes(StandardCharsets.UTF_8);
+        int buffSize = 1024;
         byte[] buffer = new byte[buffSize];
         StringBuilder response = new StringBuilder();
         int len = 0;
         try {
             socket.getOutputStream().write(outBytes);
-           InputStream in =socket.getInputStream();
-            do{
-                len =in.read(buffer);
-                response.append(new String(buffer, 0 , len, StandardCharsets.UTF_8));
-            }while(len!=-1&&len==buffSize);
+            InputStream in = socket.getInputStream();
+            do {
+                len = in.read(buffer);
+                response.append(new String(buffer, 0, len, StandardCharsets.UTF_8));
+            } while (len != -1 && len == buffSize);
             return response.toString();
         } catch (IOException e) {
             e.printStackTrace();
