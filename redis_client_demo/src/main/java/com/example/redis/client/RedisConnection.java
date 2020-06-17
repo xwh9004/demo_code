@@ -4,10 +4,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
@@ -23,6 +20,8 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 public class RedisConnection implements Closeable {
 
+    private DefaultRedisSocketFactory redisSocketFactory = new DefaultRedisSocketFactory();
+
     private String host = "localhost";
 
     private int port = 6379;
@@ -37,21 +36,26 @@ public class RedisConnection implements Closeable {
     public RedisConnection(String host, int port) {
         this.host = host;
         this.port = port;
-        connect();
     }
 
     public RedisConnection(int port) {
         this.port = port;
-        connect();
-
     }
 
     public void connect() {
-        try {
-            socket = new Socket(host, port);
-        } catch (IOException e) {
-            log.error("unable to connect to {}:{}\\n{}", host, port, e.getCause());
+
+        if (socket == null || socket.isClosed()) {
+
+            try {
+                socket = redisSocketFactory.createSocket(host, port);
+                outputStream = socket.getOutputStream();
+                inputStream = socket.getInputStream();
+            } catch (IOException e) {
+                log.error("unable to connect to {}:{}\\n{}", host, port, e.getCause());
+            }
         }
+
+
     }
 
     @Override
@@ -61,24 +65,50 @@ public class RedisConnection implements Closeable {
         }
     }
 
-    public String sendCommand(String command) {
-        byte[] outBytes = command.getBytes(StandardCharsets.UTF_8);
-        int buffSize = 1024;
-        byte[] buffer = new byte[buffSize];
-        StringBuilder response = new StringBuilder();
-        int len = 0;
+    public void sendCommand(String command,String... args) throws UnsupportedEncodingException {
+        byte[] bytes = new byte[8192];
+        int count = 0;
         try {
-            socket.getOutputStream().write(outBytes);
-            InputStream in = socket.getInputStream();
-            do {
-                len = in.read(buffer);
-                response.append(new String(buffer, 0, len, StandardCharsets.UTF_8));
-            } while (len != -1 && len == buffSize);
-            return response.toString();
+            connect();
+            bytes[count++] = RedisProtocol.ASTERISK_BYTE;
+            bytes[count++] = (byte)('0'+args.length+1);
+            bytes[count++] = '\r';
+            bytes[count++] = '\n';
+            bytes[count++] = RedisProtocol.DOLLAR_BYTE;
+            bytes[count++] = (byte) ('0'+command.length());
+            bytes[count++] = '\r';
+            bytes[count++] = '\n';
+            for(byte b:command.getBytes(RedisProtocol.CHARSET)){
+                bytes[count++] = b;
+            }
+            bytes[count++] = '\r';
+            bytes[count++] = '\n';
+            for(String arg:args){
+                bytes[count++] = RedisProtocol.DOLLAR_BYTE;
+                bytes[count++] = (byte) ('0'+arg.length());
+                bytes[count++] = '\r';
+                bytes[count++] = '\n';
+                for(byte b:arg.getBytes(RedisProtocol.CHARSET)){
+                    bytes[count++] = b;
+
+                }
+                bytes[count++] = '\r';
+                bytes[count++] = '\n';
+            }
+            outputStream.write(bytes,0,count);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
     }
+
+    public String getBulkReply() throws IOException {
+        byte[] buff = new byte[8192];
+        int len = inputStream.read(buff);
+
+        String response =new String(buff,0,len);
+
+        return response;
+    }
+
 
 }

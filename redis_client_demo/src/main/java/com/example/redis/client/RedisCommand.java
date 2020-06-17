@@ -14,6 +14,8 @@ public interface RedisCommand {
     String ping(final String message);
 
     String get(final String key);
+
+    String clientList();
 //    private static final String SEPARATOR = "\r\n";
 //    public static final String SET ="set";
 //    public static final String GET ="get";

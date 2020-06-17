@@ -3,6 +3,7 @@ package com.example.redis.client;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -58,23 +59,6 @@ public class RedisClient implements RedisCommand {
 //
 //    ;
 //
-//    /**
-//     * 连接ping测试
-//     * 返回 PONG 连接成功
-//     *
-//     * @return
-//     */
-//    public String ping() {
-//        String command = RedisCommand.build(RedisCommand.PING);
-//        String response = connection.sendCommand(command);
-//        try {
-//            connection.close();
-//        } catch (IOException e) {
-//            log.error("redis connection unable closed ");
-//        }
-//        return (String)parseResp(response);
-//    }
-
 
 
     private Object parseResp(String response) {
@@ -112,12 +96,12 @@ public class RedisClient implements RedisCommand {
     private Set<String> parseArraysString(String resp) {
         Set<String> result = new HashSet<>();
         char prefix = resp.charAt(0);
-        if('*'==prefix){
+        if ('*' == prefix) {
             String[] split = resp.split(SEPARATOR);
             //返回数组的大小
-            int len =Integer.valueOf(split[0].replace("*",""));
-            if(len>0){
-                for(int i=2;i<split.length;i+=2){
+            int len = Integer.valueOf(split[0].replace("*", ""));
+            if (len > 0) {
+                for (int i = 2; i < split.length; i += 2) {
                     result.add(split[i]);
                 }
             }
@@ -185,11 +169,36 @@ public class RedisClient implements RedisCommand {
 
     @Override
     public String ping(String message) {
-        return null;
+        String response = null;
+        try {
+            connection.sendCommand(RedisProtocol.Command.PING.name(),message);
+
+            response =connection.getBulkReply();
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return response;
     }
 
     @Override
     public String get(String key) {
         return null;
+    }
+
+    @Override
+    public String clientList() {
+        String response = null;
+        try {
+            connection.sendCommand(RedisProtocol.Command.CLIENT.name(),"list");
+            response =connection.getBulkReply();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+        return response;
     }
 }

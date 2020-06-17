@@ -20,4 +20,12 @@ public class RedisProtocol {
     public static final byte COLON_BYTE = ':';
 
 
+    public static enum Command{
+        PING,CLIENT,
+
+        getRaw();
+    }
+
+
+
 }
