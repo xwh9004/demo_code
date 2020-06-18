@@ -171,7 +171,7 @@ public class RedisClient implements RedisCommand {
     public String ping(String message) {
         String response = null;
         try {
-            connection.sendCommand(RedisProtocol.Command.PING.name(),message);
+            connection.sendCommand(RedisProtocol.Command.PING,message);
 
             response =connection.getBulkReply();
 
@@ -192,7 +192,7 @@ public class RedisClient implements RedisCommand {
     public String clientList() {
         String response = null;
         try {
-            connection.sendCommand(RedisProtocol.Command.CLIENT.name(),"list");
+            connection.sendCommand(RedisProtocol.Command.CLIENT,"list");
             response =connection.getBulkReply();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();

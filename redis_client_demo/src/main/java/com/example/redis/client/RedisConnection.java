@@ -28,9 +28,9 @@ public class RedisConnection implements Closeable {
 
     private Socket socket;
 
-    private InputStream inputStream;
+    private RedisInputStream inputStream;
 
-    private OutputStream outputStream;
+    private RedisOutputStream outputStream;
 
 
     public RedisConnection(String host, int port) {
@@ -42,16 +42,17 @@ public class RedisConnection implements Closeable {
         this.port = port;
     }
 
-    public void connect() {
+    public void connect() throws IOException {
 
         if (socket == null || socket.isClosed()) {
 
             try {
                 socket = redisSocketFactory.createSocket(host, port);
-                outputStream = socket.getOutputStream();
-                inputStream = socket.getInputStream();
+                outputStream = new RedisOutputStream(socket.getOutputStream());
+                inputStream = new RedisInputStream(socket.getInputStream());
             } catch (IOException e) {
-                log.error("unable to connect to {}:{}\\n{}", host, port, e.getCause());
+                log.error("unable to connect to {}:{} \n {}", host, port, e.getCause());
+                throw e;
             }
         }
 
@@ -65,47 +66,33 @@ public class RedisConnection implements Closeable {
         }
     }
 
-    public void sendCommand(String command,String... args) throws UnsupportedEncodingException {
-        byte[] bytes = new byte[8192];
-        int count = 0;
+    public void sendCommand(RedisProtocol.Command command, String... args) throws UnsupportedEncodingException {
+
         try {
             connect();
-            bytes[count++] = RedisProtocol.ASTERISK_BYTE;
-            bytes[count++] = (byte)('0'+args.length+1);
-            bytes[count++] = '\r';
-            bytes[count++] = '\n';
-            bytes[count++] = RedisProtocol.DOLLAR_BYTE;
-            bytes[count++] = (byte) ('0'+command.length());
-            bytes[count++] = '\r';
-            bytes[count++] = '\n';
-            for(byte b:command.getBytes(RedisProtocol.CHARSET)){
-                bytes[count++] = b;
-            }
-            bytes[count++] = '\r';
-            bytes[count++] = '\n';
+            outputStream.write(RedisProtocol.ASTERISK_BYTE);
+            outputStream.writeIntCRLF(args.length+1);
+            outputStream.write(RedisProtocol.DOLLAR_BYTE);
+            outputStream.writeIntCRLF(command.name().length());
+            outputStream.write(command.getRaw());
+            outputStream.writeCRLF();
             for(String arg:args){
-                bytes[count++] = RedisProtocol.DOLLAR_BYTE;
-                bytes[count++] = (byte) ('0'+arg.length());
-                bytes[count++] = '\r';
-                bytes[count++] = '\n';
-                for(byte b:arg.getBytes(RedisProtocol.CHARSET)){
-                    bytes[count++] = b;
-
-                }
-                bytes[count++] = '\r';
-                bytes[count++] = '\n';
+                outputStream.write(RedisProtocol.DOLLAR_BYTE);
+                outputStream.writeIntCRLF(arg.length());
+                outputStream.write(arg.getBytes(RedisProtocol.CHARSET));
+                outputStream.writeCRLF();
             }
-            outputStream.write(bytes,0,count);
+            outputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public String getBulkReply() throws IOException {
-        byte[] buff = new byte[8192];
-        int len = inputStream.read(buff);
 
-        String response =new String(buff,0,len);
+        String response = (String)RedisProtocol.getRedisReply(inputStream);
+
+
 
         return response;
     }
