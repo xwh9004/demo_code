@@ -19,6 +19,7 @@ public class JedisClientTest {
     @Test
     public void connect(){
         Jedis client = new Jedis("118.31.122.126");
+
 //        client.connect();
         log.info("{}",client.ping("hello"));
         log.info("{}",client.clientList());

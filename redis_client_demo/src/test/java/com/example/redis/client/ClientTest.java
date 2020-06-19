@@ -1,5 +1,6 @@
 package com.example.redis.client;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -13,37 +14,46 @@ import org.junit.Test;
  */
 public class ClientTest {
 
+
+    RedisClient client = null;
+
+    @Before
+    public void initClient(){
+        client = new RedisClient("118.31.122.126",6379);
+    }
+
     @Test
     public void ping(){
-        RedisClient client = new RedisClient("118.31.122.126",6379);
-        System.out.println(client.ping());
+
+        System.out.println(client.ping("hello redis"));
+
 
     }
 
     @Test
     public void set(){
-        RedisClient client = new RedisClient("118.31.122.126",6379);
-        System.out.println(client.set("test","test-value"));
+//        System.out.println(client.set("test","test-value"));
 
     }
 
     @Test
     public void get(){
-        RedisClient client = new RedisClient("118.31.122.126",6379);
-        System.out.println(client.get("test"));
+        System.out.println(client.get("test-2"));
 
     }
 
     @Test
     public void keys(){
-        RedisClient client = new RedisClient("118.31.122.126",6379);
-        System.out.println(client.keys("tes*"));
+//        System.out.println(client.keys("tes*"));
 
     }
+    @Test
+    public void incr(){
+        System.out.println(client.incr("test-2"));
 
+    }
     @Test
     public void clientList(){
-        RedisClient client = new RedisClient("118.31.122.126",6379);
         System.out.println(client.clientList());
 
     }

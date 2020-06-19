@@ -1,5 +1,6 @@
 package com.example.redis.client;
 
+import com.example.redis.client.exception.RedisException;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -66,7 +67,7 @@ public class RedisConnection implements Closeable {
         }
     }
 
-    public void sendCommand(RedisProtocol.Command command, String... args) throws UnsupportedEncodingException {
+    public void sendCommand(RedisProtocol.Command command, String... args)  {
 
         try {
             connect();
@@ -88,12 +89,15 @@ public class RedisConnection implements Closeable {
         }
     }
 
-    public String getBulkReply() throws IOException {
+    public String getBulkReply() throws RedisException {
 
         String response = (String)RedisProtocol.getRedisReply(inputStream);
 
+        return response;
+    }
 
-
+    public Long getLongReply() throws RedisException{
+        Long response =(Long)RedisProtocol.getRedisReply(inputStream);
         return response;
     }
 

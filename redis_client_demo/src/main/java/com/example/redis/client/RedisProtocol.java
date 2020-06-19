@@ -1,5 +1,7 @@
 package com.example.redis.client;
 
+import com.example.redis.client.exception.RedisException;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -23,7 +25,7 @@ public class RedisProtocol {
     public static final byte MINUS_BYTE = '-';
     public static final byte COLON_BYTE = ':';
 
-    private static String getBulkReply(RedisInputStream inputStream) throws IOException {
+    private static String getBulkReply(RedisInputStream inputStream) throws RedisException {
         int len =inputStream.readIntCLRF();
         byte[] b = new byte[len];
         int length =inputStream.read(b,0,len);
@@ -34,24 +36,33 @@ public class RedisProtocol {
 //        return inputStream.readLine();
     }
 
-    private static List getArrayReply(RedisInputStream inputStream) {
+    private static List getArrayReply(RedisInputStream inputStream) throws  RedisException {
+        inputStream.readIntCLRF();
 
         return null;
     }
 
-    private static String getErrorReply(RedisInputStream inputStream) {
+    private static String getErrorReply(RedisInputStream inputStream) throws RedisException  {
+//        int len =inputStream.readIntCLRF();
+        String response=inputStream.readLine();
+        return response;
+    }
+
+    private static String getSimpleReply(RedisInputStream inputStream) throws RedisException {
         return null;
     }
 
-    private static String getSimpleReply(RedisInputStream inputStream) {
-        return null;
+    /**
+     * return integer number ; the integer is guaranteed to be in range of 64 bytes;
+     * @param inputStream
+     * @return
+     */
+    private static Long getIntegerReply(RedisInputStream inputStream) throws RedisException {
+        long l =inputStream.readLongCLRF();
+        return Long.valueOf(l);
     }
 
-    private static Integer getIntegerReply(RedisInputStream inputStream) {
-        return null;
-    }
-
-    public static Object getRedisReply(RedisInputStream inputStream) throws IOException {
+    public static Object getRedisReply(RedisInputStream inputStream) throws RedisException {
         byte prefix = inputStream.readByte();
         if (DOLLAR_BYTE == prefix) {
             return getBulkReply(inputStream);
@@ -68,7 +79,7 @@ public class RedisProtocol {
     }
 
     public static enum Command {
-        PING, CLIENT;
+        PING, CLIENT,GET,INCR;
 
         byte[] getRaw() throws UnsupportedEncodingException {
             return name().getBytes(CHARSET);
