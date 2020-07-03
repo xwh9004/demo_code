@@ -18,6 +18,7 @@
         <module>java-thread</module>
         <module>system-truck</module>
         <module>java-io</module>
+        <module>redis_client_demo</module>
 
     </modules>
     <packaging>pom</packaging>
@@ -40,6 +41,11 @@
 
 
     <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.30</version>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

@@ -1,5 +1,7 @@
 package com.demo.io;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -16,12 +18,14 @@ import java.util.Scanner;
  * @version V0.1
  * @classNmae BlockClient
  */
+
 public class BlockClient {
 
 
     public static void main(String[] args) {
         try {
             Socket socket = new Socket("127.0.0.1", 8080);
+
             Scanner scanner = new Scanner(System.in);
             DataInputStream dis = null;
             DataOutputStream dout = null;
@@ -34,7 +38,6 @@ public class BlockClient {
                 //接收数据
                 System.out.println("server:" + dis.readUTF());
             }
-
 
 //
 
