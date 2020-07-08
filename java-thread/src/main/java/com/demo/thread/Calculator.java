@@ -8,7 +8,7 @@ public class Calculator implements Runnable {
 
     public void run() {
         long current =1L;
-        long max =20000L;
+        long max =200L;
         long numPrimes =0L;
         System.out.printf("Thread '%s': START\n",Thread.currentThread().getName());
         while (current<=max){

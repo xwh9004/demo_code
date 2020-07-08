@@ -18,7 +18,8 @@
         <module>java-thread</module>
         <module>system-truck</module>
         <module>java-io</module>
-        <module>redis_client_demo</module>
+        <module>java-jvm</module>
+        <module>redis-client-demo</module>
 
     </modules>
     <packaging>pom</packaging>

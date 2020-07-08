@@ -25,4 +25,6 @@ public class JedisClientTest {
         log.info("{}",client.clientList());
 
     }
+
+
 }
