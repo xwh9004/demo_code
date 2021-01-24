@@ -20,6 +20,7 @@
         <module>java-io</module>
         <module>java-jvm</module>
         <module>redis-client-demo</module>
+        <module>sort-util</module>
 
     </modules>
     <packaging>pom</packaging>
