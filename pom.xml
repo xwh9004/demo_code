@@ -21,6 +21,7 @@
         <module>java-jvm</module>
         <module>redis-client-demo</module>
         <module>sort-util</module>
+        <module>kafka-demo</module>
 
     </modules>
     <packaging>pom</packaging>
