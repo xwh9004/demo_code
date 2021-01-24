@@ -2,9 +2,12 @@ package com.demo.kafka;
 
 import com.alibaba.fastjson.JSON;
 import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.kafka.KafkaException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 public class ProducerImpl implements Producer {
@@ -13,14 +16,17 @@ public class ProducerImpl implements Producer {
     private final String topic = "quickstart-events";
     public ProducerImpl() {
         properties = new Properties();
-//        properties.put("bootstrap.servers", "localhost:9092");
-        properties.put("bootstrap.servers", "localhost:9001");
+        properties.put("bootstrap.servers", "localhost:9092");
 //        properties.put("queue.enqueue.timeout.ms", -1);
 //        properties.put("enable.idempotence", true);
 //        properties.put("transactional.id", "transactional_1");
 //        properties.put("acks", "all");
 //        properties.put("retries", "3");
 //        properties.put("max.in.flight.requests.per.connection", 1);
+        List interceptors = new ArrayList<>();
+        interceptors.add("com.demo.kafka.MyProducerInterceptor");
+        properties.put(ProducerConfig.INTERCEPTOR_CLASSES_CONFIG, interceptors);
+        properties.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         properties.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         properties.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         producer = new KafkaProducer<String, String>(properties);

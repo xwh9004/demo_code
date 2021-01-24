@@ -2,6 +2,7 @@ package com.demo.kafka;
 
 import com.alibaba.fastjson.JSON;
 import org.apache.kafka.clients.consumer.*;
+import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.TopicPartition;
 
 import java.time.Duration;
@@ -20,9 +21,11 @@ public class ConsumerImpl implements Consumer {
 //        properties.put("enable.auto.commit", false);
 //        properties.put("isolation.level", "read_committed");
 //        properties.put("auto.offset.reset", "latest");
-        properties.put("group.id", "java1-kimmking");
-//        properties.put("bootstrap.servers", "localhost:9092");
-        properties.put("bootstrap.servers", "localhost:9002");
+        List interceptors = new ArrayList<>();
+        interceptors.add("com.demo.kafka.MyConsumerInterceptor");
+        properties.put(ProducerConfig.INTERCEPTOR_CLASSES_CONFIG, interceptors);
+        properties.put("group.id", "kafka-demo");
+        properties.put("bootstrap.servers", "localhost:9092");
         properties.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         properties.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         consumer = new KafkaConsumer(properties);
