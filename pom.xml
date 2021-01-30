@@ -22,6 +22,7 @@
         <module>redis-client-demo</module>
         <module>sort-util</module>
         <module>kafka-demo</module>
+        <module>now-coder</module>
 
     </modules>
     <packaging>pom</packaging>

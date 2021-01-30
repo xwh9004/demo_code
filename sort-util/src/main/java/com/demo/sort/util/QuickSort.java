@@ -22,6 +22,9 @@ public class QuickSort {
         System.out.println(a[size-1]);
     }
 
+
+
+
     public static void printArray(int[] a){
         for (int i:a){
             System.out.print(i);
