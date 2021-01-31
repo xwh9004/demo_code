@@ -1,3 +1,5 @@
+package com.demo.nowcoder;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -19,7 +21,7 @@ public class PwdMask {
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
            String input =  scanner.nextLine();
-           //YUANzhi1987
+           //c
             System.out.println(encode(input));
         }
 
