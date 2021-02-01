@@ -23,8 +23,6 @@ public class CardRandArrange {
         if(null==cardNumbs){
             return "";
         }
-
-      boolean hasSame =false;
       for (int i=0;i<cardNumbs.length;i++){
           for (int j=i+1;j<cardNumbs.length;j++){
               if(compareStringNum(cardNumbs[i],cardNumbs[j],cardNumbs)<0){
@@ -57,18 +55,33 @@ public class CardRandArrange {
         if(str2 == null){
             return -1;
         }
-        int len1=  str1.length();
-        int len2 = str2.length();
+
+        int len1 = str1.length();
+        int len2 =str2.length();
+        int len = Math.min(len1,len2);
+
+        if(len1 ==0&&len2 ==0){
+            return 0;
+        }
+        if(len1 ==0){
+            return -1;
+        }
+        if(len2 ==0){
+            return 1;
+        }
+        StringBuffer sb = new StringBuffer();
         int res = 0;
-       //查找第一个不相同的位
-        int index = -1;
-        int len =  Math.min(len1,len2);
+        int index = 0;
         for (int i=0;i<len;i++){
-            if(str1.charAt(i)!=str2.charAt(i)){
+            char c1 = str1.charAt(i);
+            char c2 = str2.charAt(i);
+            if(c1!=c2){
+                res = c1-c2;
                 index =i;
                 break;
             }
         }
+
         //
         if(index<len-1){
             //不同的位置出现在非末位的位置
@@ -143,14 +156,13 @@ public class CardRandArrange {
 
     }
 
-    public static boolean isExist(String str,String[] strs){
-        for (int i=0;i<strs.length;i++){
-            if(str.equals(strs[i])){
+    public static boolean isExist(String str,String[] strs) {
+        for (int i = 0; i < strs.length; i++) {
+            if (str.equals(strs[i])) {
                 return true;
             }
         }
         return false;
     }
-
 
 }
