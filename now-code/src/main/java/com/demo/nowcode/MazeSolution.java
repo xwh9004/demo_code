@@ -1,6 +1,5 @@
-package com.demo.nowcoder;
+package com.demo.nowcode;
 
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class MazeSolution {

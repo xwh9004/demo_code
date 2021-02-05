@@ -23,6 +23,7 @@
         <module>sort-util</module>
         <module>kafka-demo</module>
         <module>now-coder</module>
+        <module>leet-coder</module>
 
     </modules>
     <packaging>pom</packaging>

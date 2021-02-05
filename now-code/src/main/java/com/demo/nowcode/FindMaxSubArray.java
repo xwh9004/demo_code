@@ -1,4 +1,4 @@
-package com.demo.nowcoder;
+package com.demo.nowcode;
 
 /**
  * 给定一个数组arr，返回子数组的最大累加和

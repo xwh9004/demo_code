@@ -1,4 +1,4 @@
-package com.demo.nowcoder;
+package com.demo.nowcode;
 /**
  * 连连看，消除连续重复字符 aaebbecd  --> cd;
  */

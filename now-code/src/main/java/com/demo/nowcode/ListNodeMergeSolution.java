@@ -1,4 +1,4 @@
-package com.demo.nowcoder;
+package com.demo.nowcode;
 
 public class ListNodeMergeSolution {
 

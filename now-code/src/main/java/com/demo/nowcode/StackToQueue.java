@@ -1,6 +1,5 @@
-package com.demo.nowcoder;
+package com.demo.nowcode;
 
-import java.util.Queue;
 import java.util.Stack;
 
 public class StackToQueue {

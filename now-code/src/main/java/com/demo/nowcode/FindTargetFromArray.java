@@ -1,6 +1,4 @@
-package com.demo.nowcoder;
-
-import java.util.Arrays;
+package com.demo.nowcode;
 
 /**
  * 给出一个整数数组，请在数组中找出两个加起来等于目标值的数，
