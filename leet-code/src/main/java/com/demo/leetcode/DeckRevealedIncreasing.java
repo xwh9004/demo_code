@@ -8,7 +8,7 @@ public class DeckRevealedIncreasing {
 
     public static void main(String[] args) {
 //        int[] arr ={17,13,11,2,3,5,7};
-        int[] arr = {1,2,3,4,5};
+        int[] arr = {1,2,3,4,5,6,7,8,9};
         int [] result=deckRevealedIncreasing(arr);
         printArray(result);
     }
