@@ -19,6 +19,7 @@
         <module>system-truck</module>
         <module>java-io</module>
         <module>java-jvm</module>
+        <module>java-stream</module>
         <module>redis-client-demo</module>
         <module>sort-util</module>
         <module>kafka-demo</module>
