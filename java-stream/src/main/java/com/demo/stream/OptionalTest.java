@@ -1,9 +1,11 @@
 package com.demo.stream;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class OptionalTest {
 
@@ -47,5 +49,19 @@ public class OptionalTest {
         System.out.println(transformed.get());
     }
 
+    @Test
+    public void flatMap(){
+        Optional<String> stringOptional = Optional.of("stringValue");
+        Optional<String> stringOptional1 = Optional.empty();
 
+        Optional<String> opt = stringOptional1.flatMap(v -> Optional.of(v.toUpperCase()));
+        System.out.println(opt.orElse("empty" +
+                ""));
+    }
+
+    @Test
+    public void flatMap2(){
+        Stream<String> stream = Stream.of("one", "two", "three", "four", "five");
+//        stream.map(String::toUpperCase).filter(Optional::isPresent);
+    }
 }
