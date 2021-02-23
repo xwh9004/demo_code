@@ -25,6 +25,7 @@
         <module>kafka-demo</module>
         <module>now-code</module>
         <module>leet-code</module>
+        <module>my-code</module>
 
     </modules>
     <packaging>pom</packaging>
