@@ -1,7 +1,9 @@
 package com.demo.mycode;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.stream.Stream;
 
 public class MyBitMap {
 
@@ -81,14 +83,5 @@ public class MyBitMap {
                 return true;
         }
         return andRes > 0;
-    }
-
-
-    public static void main(String[] args) {
-        MyBitMap bitMap = new MyBitMap();
-        bitMap.setBit(32);
-        System.out.println(bitMap.testBit(32));
-        System.out.println(bitMap.getBitLength());
-
     }
 }
