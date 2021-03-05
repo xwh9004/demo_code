@@ -79,7 +79,7 @@ Main : Old State :RUNNABLE
 Main : New State :TERMINATED
 Main : ************************************************
 Main : Id 22 -My Thread 9
-Main : Priority 1
+Main : Priority 1   
 Main : Old State :RUNNABLE
 Main : New State :TERMINATED
 Main : ************************************************
