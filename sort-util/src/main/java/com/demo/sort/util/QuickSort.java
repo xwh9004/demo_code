@@ -44,23 +44,13 @@ public class QuickSort {
     public static int partition(int[] a,int low,int high){
         int k = a[low];
          //将数组一分为2，左边都比 k小，右边都比k大
-        int pl = low+1;
-        int ph = high;
+        int pl = low;
+        int ph = high+1;
         while (true){
             //左边部分 第一个比k大的数
-            while (a[pl]<=k){
-                pl++;
-                if(pl>=high){
-                    break;
-                }
-            }
+            while (a[++pl]<=k)if(pl==high)break;
             //右边比分 第一个k小的数
-            while (a[ph]>k){
-                ph--;
-                if(ph<=low){
-                    break;
-                }
-            }
+            while (a[--ph]>k)  if(ph==low) break;
             if(pl>=ph){
                 break;
             }
