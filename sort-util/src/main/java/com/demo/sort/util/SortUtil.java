@@ -68,7 +68,7 @@ public class SortUtil {
         if(low>=high){
             return;
         }
-        int mid = low + (high -low)/2;
+        int mid = (low + high)>>1;
         merge_sort(array,low,mid);
         merge_sort(array,mid+1,high);
         merge(array,low,mid,mid+1,high);
@@ -91,16 +91,16 @@ public class SortUtil {
           int start =0;
           int end =0;
           if(lp>left_high){
-              start = lp;
-              end = left_high;
-          }else{
               start = rp;
               end = right_high;
+          }else{
+              start = lp;
+              end = left_high;
           }
-            while (start<=end){
+          while (start<=end){
              tmp[i++]=array[start];
              start++;
-            }
+           }
 
         copyOf(tmp,array,0,left_low,tmp.length);
     }

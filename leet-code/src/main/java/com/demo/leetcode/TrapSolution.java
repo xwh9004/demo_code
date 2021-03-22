@@ -54,7 +54,6 @@ public class TrapSolution {
             count++;
             taken+=left;
         }
-
         return right;
     }
 
