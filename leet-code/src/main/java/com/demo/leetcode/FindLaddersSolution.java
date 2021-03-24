@@ -17,6 +17,8 @@ import java.util.*;
  */
 public class FindLaddersSolution {
 
+
+
     public static void main(String[] args) {
         FindLaddersSolution solution = new FindLaddersSolution();
 //        String[] words= {"hot","dot","dog","lot","log","cog"};
@@ -88,11 +90,12 @@ public class FindLaddersSolution {
             path.add(endWord);
             return ;
         }
+
+        System.out.println("beginWord="+beginWord);
         //当前路径包含beginWord,避免路径死循环，直接返回
         if(sets.contains(beginWord)){
             return ;
         }
-
         if(isOneWordDiff(beginWord,endWord)){
             path.add(beginWord);
             path.add(endWord);
