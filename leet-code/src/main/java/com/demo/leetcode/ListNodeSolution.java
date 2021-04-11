@@ -7,12 +7,6 @@ import org.junit.Test;
 
 public class ListNodeSolution {
 
-  static class ListNode {
-         int val;
-         ListNode next;
-         ListNode(int x) { val = x; }
-  }
-
   public void printListNode(ListNode head){
      ListNode node = head;
      while (node!=null){
@@ -25,18 +19,18 @@ public class ListNodeSolution {
   public  ListNode head = null;
   @Before
   public void headNode(){
-       head = new ListNode(1);
+      head = new ListNode(1);
       ListNode nd_2 = new ListNode(2);
       head.next = nd_2;
-      ListNode nd_3 = new ListNode(3);
-      nd_2.next = nd_3;
-      ListNode nd_4 = new ListNode(4);
-      nd_3.next = nd_4;
-      ListNode nd_5 = new ListNode(5);
-      nd_4.next = nd_5;
-      ListNode nd_6 = new ListNode(6);
-      nd_5.next = nd_6;
-      nd_6.next = nd_2;
+//      ListNode nd_3 = new ListNode(3);
+//      nd_2.next = nd_3;
+//      ListNode nd_4 = new ListNode(4);
+//      nd_3.next = nd_4;
+//      ListNode nd_5 = new ListNode(5);
+//      nd_4.next = nd_5;
+//      ListNode nd_6 = new ListNode(6);
+//      nd_5.next = nd_6;
+//      nd_6.next = nd_2;
 
 //      printListNode(indexMiddle(head));
 //      System.out.println(taiIndexOf(head,1).val);
@@ -51,6 +45,8 @@ public class ListNodeSolution {
 //      printListNode(removeIndexOf(head,1));
 //      printListNode(removeIndexOf(head,1));
 //      printListNode(removeIndexOf(head,1));
+
+
   }
   @Test
   public void testPrint(){
@@ -59,8 +55,12 @@ public class ListNodeSolution {
       }else{
           System.out.println("list is contains one circle");
       }
-
   }
+    @Test
+    public void testReverse(){
+        printListNode(reverseList2(head));
+    }
+
 
     @Test
     public void testNodeCircle(){
@@ -241,4 +241,25 @@ public class ListNodeSolution {
         head = prev;
         return head;
     }
+
+    /**
+     * 定义一个函数，输入一个链表的头节点，反转该链表并输出反转后链表的头节点
+     */
+    public ListNode reverseList2(ListNode head) {
+        ListNode tail = head;
+        return doReverse(head,tail);
+    }
+
+    public ListNode doReverse(ListNode head,ListNode tail ){
+        if(tail.next==null){
+            return head;
+        }
+        ListNode currentNode= tail.next;
+        tail.next = currentNode.next;
+        currentNode.next = head;
+        head = currentNode;
+       return doReverse(head,tail);
+    }
+
+
 }
