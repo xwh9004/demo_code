@@ -216,12 +216,10 @@ public class ListNodeSolution {
         ListNode node = head;
         while (node!=null){
             ListNode n_node = new ListNode(node.val);
-            if(n_head ==null){
-                n_head = n_node;
-            }else{
+            if (n_head != null) {
                 n_node.next = n_head;
-                n_head = n_node;
             }
+            n_head = n_node;
             node = node.next;
         }
       return n_head;
