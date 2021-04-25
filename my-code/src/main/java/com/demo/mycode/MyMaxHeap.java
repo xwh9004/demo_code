@@ -47,7 +47,7 @@ public class MyMaxHeap<T extends Comparable> {
     private void sink(int k) {
         while ( 2*k <= size){
             int j =2*k;
-            if(j<size &&!less(j,j+1)){
+            if(j<size && !less(j,j+1)){
                 j++;
             }
             if(less(k,j))break;
