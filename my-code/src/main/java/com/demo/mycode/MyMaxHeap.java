@@ -7,12 +7,12 @@ public class MyMaxHeap<T extends Comparable> {
 
     private Object[] values;
 
-    private final int defaultSize =16;
+    private static final int defaultSize =16;
 
     private int size;
 
     public MyMaxHeap(){
-        values = new Object[defaultSize];
+        this(defaultSize);
     }
     public MyMaxHeap(int capacity){
         values = new Object[capacity];
@@ -30,27 +30,27 @@ public class MyMaxHeap<T extends Comparable> {
     }
 
     private void swim(int k) {
-        while ( k >1 && less(k, k /2)){
-            exchange(k, k /2);
+        while ( k >1 && less(k/2, k )){
+            exchange(k/2, k );
             k = k /2;
         }
     }
 
-    public T deleteMin(){
-        Object min = values[1];
+    public  T deleteMax(){
+        Object max = values[1];
         exchange(1,size);
         values[size--] = null;
         sink(1);
-        return (T)min;
+        return (T)max;
     }
 
     private void sink(int k) {
         while ( 2*k <= size){
             int j =2*k;
-            if(j<size && !less(j,j+1)){
+            if(j<size && less(j,j+1)){
                 j++;
             }
-            if(less(k,j))break;
+            if(!less(k,j))break;
             exchange(k, j);
             k = j;
         }
@@ -58,8 +58,8 @@ public class MyMaxHeap<T extends Comparable> {
 
     /**
      *
-     * @param i
-     * @param j
+     * @param i 索引i
+     * @param j 索引j
      * @return
      */
     private boolean less(int i,int j){
@@ -84,10 +84,10 @@ public class MyMaxHeap<T extends Comparable> {
         maxHeap.insert(10);
         maxHeap.insert(5);
         System.out.println();
-        System.out.println(maxHeap.deleteMin());
-        System.out.println(maxHeap.deleteMin());
-        System.out.println(maxHeap.deleteMin());
-        System.out.println(maxHeap.deleteMin());
+        System.out.println(maxHeap.deleteMax());
+        System.out.println(maxHeap.deleteMax());
+        System.out.println(maxHeap.deleteMax());
+        System.out.println(maxHeap.deleteMax());
 
         System.out.println();
     }
