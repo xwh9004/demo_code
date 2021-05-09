@@ -20,4 +20,23 @@ public class MyTest {
 
     private void bar2() {
     }
+
+    public int test(String name){
+        switch (name){
+            case "Java":
+                return 100;
+            case "Kotlin":
+                return 200;
+            default:return -1;
+        }
+    }
+    public int test1(String name){
+        switch (name){
+            case "Aa":
+                return 100;
+            case "BB":
+                return 200;
+            default:return -1;
+        }
+    }
 }
