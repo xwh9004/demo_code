@@ -27,6 +27,7 @@
         <module>leet-code</module>
         <module>my-code</module>
         <module>java-aop</module>
+        <module>spring-test</module>
 
     </modules>
     <packaging>pom</packaging>
