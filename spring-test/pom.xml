@@ -11,6 +11,7 @@
 
     <artifactId>spring-test</artifactId>
 
+
     <properties>
         <maven.compiler.source>15</maven.compiler.source>
         <maven.compiler.target>15</maven.compiler.target>
@@ -22,5 +23,4 @@
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
     </dependencies>
-
 </project>

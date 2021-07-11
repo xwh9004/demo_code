@@ -26,8 +26,8 @@
         <module>now-code</module>
         <module>leet-code</module>
         <module>my-code</module>
-        <module>java-aop</module>
-        <module>mybatis-test</module>
+	<module>java-aop</module>
+	<module>mybatis-test</module>
         <module>spring-test</module>
 
     </modules>
