@@ -6,4 +6,8 @@
     <select id="selectUser" resultType="com.demo.mybatistest.domain.User">
         select * from user where id = #{id}
     </select>
+
+    <select id="selectAll" resultType="List">
+        select * from user
+    </select>
 </mapper>

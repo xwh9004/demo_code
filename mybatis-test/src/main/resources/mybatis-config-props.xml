@@ -10,10 +10,10 @@
             <transactionManager type="JDBC"/>
             <!-- 数据库连接相关配置 ,这里动态获取config.properties文件中的内容-->
             <dataSource type="POOLED">
-                <property name="driver" value="com.mysql.jdbc.Driver" />
-                <property name="url" value="jdbc:mysql://localhost:3306/test?useSSL=false&amp;useUnicode=true&amp;characterEncoding=utf8&amp;autoReconnect=true&amp;failOverReadOnly=false&amp;allowMultiQueries=true&amp;rewriteBatchedStatements=true&amp;serverTimezone=GMT%2B8" />
-                <property name="username" value="root" />
-                <property name="password" value="" />
+                <property name="driver" value="${drive}" />
+                <property name="url" value="${url}" />
+                <property name="username" value="${username}" />
+                <property name="password" value="${password}" />
             </dataSource>
         </environment>
     </environments>
