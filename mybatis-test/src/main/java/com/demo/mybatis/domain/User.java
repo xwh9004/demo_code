@@ -1,6 +1,4 @@
-package com.demo.mybatistest.domain;
-
-import lombok.Data;
+package com.demo.mybatis.domain;
 
 public class User {
     private Integer id;

@@ -1,6 +1,6 @@
-package com.demo.mybatistest.map;
+package com.demo.mybatis.map;
 
-import com.demo.mybatistest.domain.User;
+import com.demo.mybatis.domain.User;
 import org.apache.ibatis.annotations.Select;
 
 public interface UserMapper {
