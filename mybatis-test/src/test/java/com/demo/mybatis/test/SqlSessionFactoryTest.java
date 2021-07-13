@@ -43,6 +43,13 @@ public class SqlSessionFactoryTest {
         User user = sqlSession.selectOne(selectUser,1);
         System.out.println(user);
     }
+
+    @Test
+    public void typeAliasTest() {
+        String selectUser = "com.demo.mybatis.UserMapper.selectUserById";
+        User user = sqlSession.selectOne(selectUser,1);
+        System.out.println(user);
+    }
     @Test
     public void selectByAnnotation() {
         UserMapper userMapper = sqlSession.getMapper(UserMapper.class);

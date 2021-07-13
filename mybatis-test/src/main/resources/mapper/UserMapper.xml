@@ -6,8 +6,11 @@
     <select id="selectUser" resultType="com.demo.mybatis.domain.User">
         select * from user where id = #{id}
     </select>
-
+    <select id="selectUserById" resultType="User">
+        select * from user where id = #{id}
+    </select>
     <select id="selectAll" resultType="List">
         select * from user
     </select>
+
 </mapper>
