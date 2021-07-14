@@ -55,8 +55,11 @@ public class SqlSessionFactoryTest {
         UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
         System.out.println(userMapper.selectUserById(1));
     }
-
-    public void globallyCacheTest(){
-
+    @Test
+    public void typeHandlerTest(){
+        String selectUser = "com.demo.mybatis.UserMapper.selectUserById";
+        User user = sqlSession.selectOne(selectUser,1);
+        User user2 = sqlSession.selectOne(selectUser,2);
+        System.out.println(user);
     }
 }
