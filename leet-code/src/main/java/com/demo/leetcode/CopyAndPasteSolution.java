@@ -26,7 +26,7 @@ public class CopyAndPasteSolution {
         step[2] = 2;
 
         LinkedHashMap map = new LinkedHashMap();
-//        map.put();
+//        mapper.put();
 
          return 0;
     }
