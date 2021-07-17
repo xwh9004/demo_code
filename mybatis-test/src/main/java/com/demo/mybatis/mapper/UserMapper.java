@@ -1,4 +1,4 @@
-package com.demo.mybatis.map;
+package com.demo.mybatis.mapper;
 
 import com.demo.mybatis.domain.User;
 import org.apache.ibatis.annotations.Select;

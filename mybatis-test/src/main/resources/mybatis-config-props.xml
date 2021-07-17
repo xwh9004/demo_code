@@ -20,7 +20,7 @@
     <!-- mapping文件路径配置 -->
     <mappers>
         <mapper resource="mapper/UserMapper.xml"/>
-        <mapper class="com.demo.mybatis.map.UserMapper"></mapper>
+        <mapper class="com.demo.mybatis.mapper.UserMapper"></mapper>
     </mappers>
 
 </configuration>

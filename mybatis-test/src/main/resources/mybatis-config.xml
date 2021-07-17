@@ -26,7 +26,7 @@
             <!-- 数据库连接相关配置 ,这里动态获取config.properties文件中的内容-->
             <dataSource type="POOLED">
                 <property name="driver" value="com.mysql.cj.jdbc.Driver" />
-                <property name="url" value="jdbc:mysql://localhost:3306/test?employees=false&amp;useUnicode=true&amp;characterEncoding=utf8&amp;autoReconnect=true&amp;failOverReadOnly=false&amp;allowMultiQueries=true&amp;rewriteBatchedStatements=true&amp;serverTimezone=GMT%2B8" />
+                <property name="url" value="jdbc:mysql://localhost:3306/employees?employees=false&amp;useUnicode=true&amp;characterEncoding=utf8&amp;autoReconnect=true&amp;failOverReadOnly=false&amp;allowMultiQueries=true&amp;rewriteBatchedStatements=true&amp;serverTimezone=GMT%2B8" />
                 <property name="username" value="root" />
                 <property name="password" value="" />
             </dataSource>
@@ -45,7 +45,8 @@
     <!-- mapping文件路径配置 -->
     <mappers>
         <mapper resource="mapper/UserMapper.xml"/>
-        <mapper class="com.demo.mybatis.map.UserMapper"/>
+        <mapper resource="mapper/EmployeeMapper.xml"/>
+        <package name="com.demo.mybatis.mapper"></package>
     </mappers>
 
 

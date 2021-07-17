@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.demo.mybatis.EmployeeMapper">
+
+
+    <resultMap id="employee" type="com.demo.mybatis.domain.Employee">
+        <result column="emp_no" javaType="Long" property="empNo"></result>
+        <result column="birth_date" javaType="Date" property="birthDate"></result>
+        <result column="first_name" javaType="String" property="firstName"></result>
+        <result column="last_name" javaType="String" property="lastName"></result>
+        <result column="gender" javaType="String" property="gender"></result>
+        <result column="hire_date" javaType="Date" property="hireDate"></result>
+    </resultMap>
+
+
+    <cache size="512" readOnly="true" flushInterval="100000" eviction="FIFO" ></cache>
+    <select id="selectByNo" resultMap="employee"  >
+        select emp_no ,birth_date ,first_name,last_name,gender,hire_date
+         from employees where emp_no = #{empNo}
+    </select>
+
+
+    <select id="selectByFirstName" resultMap="employee" timeout="5" fetchSize="100" >
+        select emp_no ,birth_date ,first_name,last_name,gender,hire_date
+         from employees where first_name = #{firstName}
+    </select>
+
+</mapper>
