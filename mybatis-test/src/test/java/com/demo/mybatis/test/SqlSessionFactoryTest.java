@@ -1,5 +1,6 @@
 package com.demo.mybatis.test;
 
+import com.demo.mybatis.domain.Department;
 import com.demo.mybatis.domain.Employee;
 import com.demo.mybatis.domain.User;
 import com.demo.mybatis.mapper.UserMapper;
@@ -100,5 +101,37 @@ public class SqlSessionFactoryTest {
         System.out.println(employeeList.size());
         employeeList = sqlSession1.selectList(selectByFirstName,"Georgi");
         System.out.println(employeeList.size());
+    }
+
+    /**
+     * 1 将sql分为动态部分与静态部分
+     * 2 将动态部分，每次sql执行时候动态部分与静态部分拼接到一起。
+     * 3 以if-test为例： 将每个 if 部分抽象成一个 ifSqlNode,每次执行根据条件，判断表达式是否成立；
+     * 3 表达式成立即拼接在一起，否则舍弃。
+     */
+    @Test
+    public void ifTestConditionTest(){
+        String findDeptWithNoOrName = "com.demo.mybatis.Department.findDeptWithNoAndName";
+        Department condition = new Department();
+        condition.setDeptNo("d009");
+//        condition.setDeptName("Customer Service");
+        Department department = sqlSession.selectOne(findDeptWithNoOrName,condition);
+        System.out.println(department.toString());
+    }
+    /**
+     * 1 将sql分为动态部分与静态部分
+     * 2 将动态部分，每次sql执行时候动态部分与静态部分拼接到一起。
+     * 3 以chose-when为例：先将chose抽象成choseSqlNode,
+     *   将每个 when 部分抽象成一个 ifSqlNode,每次执行根据条件，判断表达式是否成立；
+     * 4  依次判断ifSqlNode条件是否成立，直到找到第一个成立的when语句，并将sql拼接。
+     */
+    @Test
+    public void choseWhenConditionTest(){
+        String findDeptWithNoOrName = "com.demo.mybatis.Department.findDeptWithNoOrName";
+        Department condition = new Department();
+        condition.setDeptNo("d009");
+        condition.setDeptName("Customer Service");
+        Department department = sqlSession.selectOne(findDeptWithNoOrName,condition);
+        System.out.println(department.toString());
     }
 }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.mybatis.Department">
+    <select id="findDeptWithNoAndName"
+            resultType="com.demo.mybatis.domain.Department">
+        SELECT dept_no as deptNo,dept_name as deptName FROM departments
+        WHERE 1 = 1
+        <if test="deptNo != null">
+            AND dept_no = #{deptNo}
+        </if>
+        <if test="deptName != null">
+            AND dept_name = #{deptName}
+        </if>
+    </select>
+    <select id="findDeptWithNoOrName"
+            resultType="com.demo.mybatis.domain.Department">
+        SELECT dept_no as deptNo,dept_name as deptName FROM departments
+        WHERE 1 = 1
+        <choose>
+            <when test="deptName != null">
+                AND dept_name = #{deptName}
+            </when>
+            <when test="deptNo != null">
+                AND dept_no = #{deptNo}
+            </when>
+        </choose>
+
+    </select>
+</mapper>
