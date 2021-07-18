@@ -28,4 +28,13 @@
         </choose>
 
     </select>
+
+    <select id="findDeptWithNos" resultType="com.demo.mybatis.domain.Department">
+        SELECT dept_no as deptNo,dept_name as deptName FROM departments
+        WHERE  dept_no in
+        <foreach item="item" index="" collection="array" open="("  close=")"  separator=",">
+            #{item}
+        </foreach>
+
+    </select>
 </mapper>

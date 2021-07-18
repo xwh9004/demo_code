@@ -18,27 +18,28 @@ import java.util.List;
 public class SqlSessionFactoryTest {
 
     private SqlSession sqlSession;
-    private SqlSession sqlSession1;
+    private SqlSession sqlSessionTest;
+    private SqlSession anotherSqlSession;
     @Before
     public void buildSqlSession() throws IOException {
         String resource = "mybatis-config.xml";
         InputStream inputStream = Resources.getResourceAsStream(resource);
         SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
         sqlSession = sqlSessionFactory.openSession();
-        sqlSession1 = sqlSessionFactory.openSession();
+        anotherSqlSession = sqlSessionFactory.openSession();
     }
 
-//    /**
-//     * 环境测试
-//     * @throws IOException
-//     */
-//    @Before
-//    public void buildSqlSessionByEnv() throws IOException {
-//        String resource = "mybatis-config.xml";
-//        InputStream inputStream = Resources.getResourceAsStream(resource);
-//        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream,"test");
-//        sqlSession1 = sqlSessionFactory.openSession();
-//    }
+    /**
+     * 环境测试
+     * @throws IOException
+     */
+    @Before
+    public void buildSqlSessionByEnv() throws IOException {
+        String resource = "mybatis-config.xml";
+        InputStream inputStream = Resources.getResourceAsStream(resource);
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream,"test");
+        sqlSessionTest = sqlSessionFactory.openSession();
+    }
 //    @Before
 //    public void buildSqlSessionByProp() throws IOException {
 //        String resource = "mybatis-config-props.xml";
@@ -70,6 +71,18 @@ public class SqlSessionFactoryTest {
         UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
         System.out.println(userMapper.selectUserById(1));
     }
+
+    @Test
+    public void selectProviderTest() {
+        UserMapper userMapper = sqlSessionTest.getMapper(UserMapper.class);
+        User user = new User();
+        user.setUsername("Jack");
+        user.setAddress("SunYaoRd");
+        user.setAge(18);
+        userMapper.insert(user);
+        sqlSessionTest.commit();
+        System.out.println(user);
+    }
     @Test
     public void typeHandlerTest(){
         String selectUser = "com.demo.mybatis.UserMapper.selectUserById";
@@ -99,7 +112,7 @@ public class SqlSessionFactoryTest {
         List<Employee> employeeList = sqlSession.selectList(selectByFirstName,"Georgi");
         sqlSession.commit();  //刷入缓存
         System.out.println(employeeList.size());
-        employeeList = sqlSession1.selectList(selectByFirstName,"Georgi");
+        employeeList = anotherSqlSession.selectList(selectByFirstName,"Georgi");
         System.out.println(employeeList.size());
     }
 
@@ -134,4 +147,21 @@ public class SqlSessionFactoryTest {
         Department department = sqlSession.selectOne(findDeptWithNoOrName,condition);
         System.out.println(department.toString());
     }
+
+    /**
+     * foreachSqlNode
+     */
+    @Test
+    public void forEachTest(){
+        String findDeptWithNos = "com.demo.mybatis.Department.findDeptWithNos";
+//        List<String> condition = new ArrayList<>();
+//        condition.add("d009");
+//        condition.add("d005");
+        String[] condition ={"d009","d005"};
+        List<Department> departments = sqlSession.selectList(findDeptWithNos,condition);
+        System.out.println(departments.size());
+    }
+
+
+
 }
