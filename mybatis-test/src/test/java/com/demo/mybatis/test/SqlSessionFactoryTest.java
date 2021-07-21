@@ -68,12 +68,12 @@ public class SqlSessionFactoryTest {
     }
     @Test
     public void selectByAnnotation() {
-        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+        UserMapper userMapper = sqlSessionTest.getMapper(UserMapper.class);
         System.out.println(userMapper.selectUserById(1));
     }
 
     @Test
-    public void selectProviderTest() {
+    public void insertProviderTest() {
         UserMapper userMapper = sqlSessionTest.getMapper(UserMapper.class);
         User user = new User();
         user.setUsername("Jack");
@@ -162,6 +162,18 @@ public class SqlSessionFactoryTest {
         System.out.println(departments.size());
     }
 
-
+    /**
+     * 引如log包
+     * 配置 log4j.logger.xxx.xxx 可以配置想要打印的log
+     */
+    @Test
+    public void logTest(){
+        String findDeptWithNoOrName = "com.demo.mybatis.Department.findDeptWithNoOrName";
+        Department condition = new Department();
+        condition.setDeptNo("d009");
+        condition.setDeptName("Customer Service");
+        Department department = sqlSession.selectOne(findDeptWithNoOrName,condition);
+        System.out.println(department.toString());
+    }
 
 }
