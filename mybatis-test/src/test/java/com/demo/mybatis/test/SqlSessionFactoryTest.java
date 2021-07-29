@@ -26,6 +26,7 @@ public class SqlSessionFactoryTest {
         InputStream inputStream = Resources.getResourceAsStream(resource);
         SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
         sqlSession = sqlSessionFactory.openSession();
+        sqlSession.getConnection();
         anotherSqlSession = sqlSessionFactory.openSession();
     }
 
@@ -126,8 +127,8 @@ public class SqlSessionFactoryTest {
     public void ifTestConditionTest(){
         String findDeptWithNoOrName = "com.demo.mybatis.Department.findDeptWithNoAndName";
         Department condition = new Department();
-        condition.setDeptNo("d009");
-//        condition.setDeptName("Customer Service");
+//        condition.setDeptNo("d009");
+        condition.setDeptName("Customer Service");
         Department department = sqlSession.selectOne(findDeptWithNoOrName,condition);
         System.out.println(department.toString());
     }
@@ -175,5 +176,22 @@ public class SqlSessionFactoryTest {
         Department department = sqlSession.selectOne(findDeptWithNoOrName,condition);
         System.out.println(department.toString());
     }
+
+    /**
+     * #与$的区别
+     */
+    @Test
+    public void dollarAndPound() {
+        //         select * from user where id = #{id}
+        String selectUser = "com.demo.mybatis.UserMapper.selectUser";
+        //  select * from user where id = ${id}
+        String selectUserById = "com.demo.mybatis.UserMapper.selectUserById";
+        List users1 =  sqlSessionTest.selectList(selectUser,"1 or 1=1 ");
+        List users2 =  sqlSessionTest.selectList(selectUserById,"1 or 1=1");
+        System.out.println(users1.size());
+        System.out.println(users2.size());
+    }
+
+
 
 }

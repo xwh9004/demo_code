@@ -20,7 +20,7 @@
         WHERE 1 = 1
         <choose>
             <when test="deptName != null">
-                AND dept_name = #{deptName}
+                AND dept_name = ${deptName}
             </when>
             <when test="deptNo != null">
                 AND dept_no = #{deptNo}

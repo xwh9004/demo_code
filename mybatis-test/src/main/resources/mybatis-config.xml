@@ -49,9 +49,9 @@
     <!-- mapping文件路径配置 -->
     <mappers>
         <mapper resource="mapper/UserMapper.xml"/>
-        <mapper resource="mapper/EmployeeMapper.xml"/>
+       <!-- <mapper resource="mapper/EmployeeMapper.xml"/>
         <mapper resource="mapper/DepartmentMapper.xml"/>
-        <package name="com.demo.mybatis.mapper"></package>
+        <package name="com.demo.mybatis.mapper"></package>-->
     </mappers>
 
 
