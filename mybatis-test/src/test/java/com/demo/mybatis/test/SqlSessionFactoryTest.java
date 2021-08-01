@@ -1,6 +1,7 @@
 package com.demo.mybatis.test;
 
 import com.demo.mybatis.domain.Department;
+import com.demo.mybatis.domain.DeptManager;
 import com.demo.mybatis.domain.Employee;
 import com.demo.mybatis.domain.User;
 import com.demo.mybatis.mapper.UserMapper;
@@ -192,6 +193,21 @@ public class SqlSessionFactoryTest {
         System.out.println(users2.size());
     }
 
+    @Test
+    public void nestCollectionTest(){
+        String selectDeptManager = "com.demo.mybatis.EmployeeMapper.selectDeptManagers";
 
+        String condition ="d001";
+        List deptManagers = sqlSession.selectList(selectDeptManager,condition);
+        System.out.println(deptManagers.size());
+    }
 
+    @Test
+    public void lazyLoadTest(){
+        String selectDeptManager = "com.demo.mybatis.EmployeeMapper.selectDeptManager";
+
+        String condition ="d001";
+        Department departments = sqlSession.selectOne(selectDeptManager,condition);
+        System.out.println(departments.getManagers());
+    }
 }

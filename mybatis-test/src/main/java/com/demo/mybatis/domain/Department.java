@@ -1,8 +1,11 @@
 package com.demo.mybatis.domain;
 
+import java.util.List;
+
 public class Department {
     private String deptNo;
     private String deptName;
+    private List<Employee> managers;
 
     public String getDeptNo() {
         return deptNo;
@@ -26,5 +29,13 @@ public class Department {
                 "deptNo='" + deptNo + '\'' +
                 ", deptName='" + deptName + '\'' +
                 '}';
+    }
+
+    public List<Employee> getManagers() {
+        return managers;
+    }
+
+    public void setManagers(List<Employee> managers) {
+        this.managers = managers;
     }
 }

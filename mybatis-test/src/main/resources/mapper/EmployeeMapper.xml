@@ -6,6 +6,18 @@
 <mapper namespace="com.demo.mybatis.EmployeeMapper">
 
 
+    <resultMap id="deptManager" type="com.demo.mybatis.domain.Department">
+        <id property="deptNo" javaType="String" column="dept_no" />
+        <result property="deptName" javaType="String" column="dept_name" />
+        <collection property="managers"  ofType="com.demo.mybatis.domain.Employee"
+                    column ="dept_no" select="selectByDeptNo">
+        </collection>
+    </resultMap>
+    <resultMap id="deptManagers" type="com.demo.mybatis.domain.DeptManager">
+        <id property="deptNo" javaType="String" column="dept_no" />
+        <collection property="managerList" resultMap="employee" />
+    </resultMap>
+
     <resultMap id="employee" type="com.demo.mybatis.domain.Employee">
         <result column="emp_no" javaType="Long" property="empNo"></result>
         <result column="birth_date" javaType="Date" property="birthDate"></result>
@@ -15,14 +27,29 @@
         <result column="hire_date" javaType="Date" property="hireDate"></result>
     </resultMap>
 
+    <select id="selectDeptManager" resultMap="deptManager"  >
+        select dept_no,dept_name from departments  where dept_no = #{deptNo}
+    </select>
+
+    <select id="selectDeptManagers" resultMap="deptManagers"  >
+        select d.dept_no,e.emp_no,birth_date ,first_name,last_name,gender,hire_date
+        from dept_manager d inner join employees e on e.emp_no = d.emp_no
+        where d.dept_no =#{deptNo}
+    </select>
 
     <cache size="512" readOnly="true" flushInterval="100000" eviction="FIFO" ></cache>
-    <select id="selectByNo" resultMap="employee"  >
-        select emp_no ,birth_date ,first_name,last_name,gender,hire_date
-         from employees where emp_no = #{empNo}
+
+    <select id="selectByDeptNo" resultMap="employee"  >
+        select d.dept_no,e.emp_no,birth_date ,first_name,last_name,gender,hire_date
+        from dept_manager d inner join employees e on e.emp_no = d.emp_no
+        where d.dept_no =#{deptNo}
     </select>
 
 
+    <select id="selectByNo" resultMap="employee" timeout="5" fetchSize="100" >
+        select emp_no ,birth_date ,first_name,last_name,gender,hire_date
+        from employees where emp_no = #{empNo}
+    </select>
     <select id="selectByFirstName" resultMap="employee" timeout="5" fetchSize="100" >
         select emp_no ,birth_date ,first_name,last_name,gender,hire_date
          from employees where first_name = #{firstName}
