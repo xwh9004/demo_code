@@ -207,7 +207,8 @@ public class SqlSessionFactoryTest {
         String selectDeptManager = "com.demo.mybatis.EmployeeMapper.selectDeptManager";
 
         String condition ="d001";
+        //开启懒加载时返回的对象时一个代理对象（javaassit）
         Department departments = sqlSession.selectOne(selectDeptManager,condition);
-        System.out.println(departments.getManagers());
+        System.out.println(departments);
     }
 }

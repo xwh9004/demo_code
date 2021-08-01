@@ -23,13 +23,13 @@ public class Department {
         this.deptName = deptName;
     }
 
-    @Override
-    public String toString() {
-        return "Department{" +
-                "deptNo='" + deptNo + '\'' +
-                ", deptName='" + deptName + '\'' +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "Department{" +
+//                "deptNo='" + deptNo + '\'' +
+//                ", deptName='" + deptName + '\'' +
+//                '}';
+//    }
 
     public List<Employee> getManagers() {
         return managers;

@@ -7,6 +7,8 @@
 
     <settings>
         <setting name="logImpl" value="SLF4J"/>
+        <setting name="lazyLoadingEnabled" value="true"></setting>
+        <setting name="aggressiveLazyLoading" value="false"/>
     </settings>
 
     <typeAliases>
