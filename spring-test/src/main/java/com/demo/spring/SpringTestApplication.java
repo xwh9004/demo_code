@@ -1,12 +1,11 @@
-package com.demo.springtest;
+package com.demo.spring;
 
-import com.demo.springtest.beans.ClassA;
-import org.springframework.beans.factory.BeanCurrentlyInCreationException;
+import com.demo.spring.beans.ClassA;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
-@SpringBootApplication
+//@SpringBootApplication
 public class SpringTestApplication {
 
     public static void main(String[] args) {

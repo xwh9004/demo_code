@@ -1,4 +1,4 @@
-package com.example.spring.service;
+package com.demo.spring.service;
 
 
 import org.springframework.stereotype.Service;
@@ -8,8 +8,8 @@ public class ServiceImpl {
 
     private String serviceName;
 
-    public ServiceImpl(String serviceName){
-        this.serviceName = serviceName;
+    public ServiceImpl(){
+        this.serviceName = "hello Service";
     }
 
 }
