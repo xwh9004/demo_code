@@ -1,4 +1,4 @@
-package com.demo.springtest.beans;
+package com.demo.spring.beans;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
