@@ -37,28 +37,29 @@ public class DivideSolution {
 
     public static void main(String[] args) {
         DivideSolution solution = new DivideSolution();
-        System.out.println(solution.divide(-7, -3));
-        System.out.println(solution.divide(1, 1));
-        System.out.println(solution.divide(-2147483645, -1));
+        System.out.println(solution.divide(100, 3));
+
     }
 
     public int divide(int dividend, int divisor) {
-        int max = Integer.MAX_VALUE;
-        int min =Integer.MIN_VALUE;
-
-        int dividend1 = Math.abs(dividend);
-        int divisor1 = Math.abs(divisor);
-        int count = 0;
-        //当dividend很大，而且divisor很小，执行效率很低
-        while (dividend1 >= divisor1) {
-            if (count >= max) {
-                count = max;
-                break;
-            }
-            count++;
-            dividend1 -= divisor1;
+        if (dividend == 0) {
+            return 0;
         }
-        return (dividend ^ divisor) < 0 ? -count : count;
+        if (dividend == Integer.MIN_VALUE && divisor == -1) {
+            return Integer.MAX_VALUE;
+        }
+        boolean negative;
+        negative = (dividend ^ divisor) <0;//用异或来计算是否符号相异
+        long t = Math.abs((long) dividend);
+        long d= Math.abs((long) divisor);
+        int result = 0;
+        for (int i=31; i>=0;i--) {
+            if ((t>>i)>=d) {//找出足够大的数2^n*divisor
+                result+=1<<i;//将结果加上2^n
+                t-=d<<i;//将被除数减去2^n*divisor
+            }
+        }
+        return negative ? -result : result;//符号相异取反
     }
 
     // 快速乘
