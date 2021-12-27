@@ -14,6 +14,7 @@ public class DayOfYearSolution {
         Assert.assertEquals(41,solution.dayOfYear("2019-02-10"));
         Assert.assertEquals(60,solution.dayOfYear("2003-03-01"));
         Assert.assertEquals(61,solution.dayOfYear("2004-03-01"));
+        Assert.assertEquals(122,solution.dayOfYear("1900-05-02"));
     }
 
     public int dayOfYear(String date) {
@@ -27,7 +28,7 @@ public class DayOfYearSolution {
         int month = Integer.valueOf(monthStr).intValue();
         int day = Integer.valueOf(dayStr).intValue();
         int dayOfYear = 0;
-        if (year % 4 == 0 || year % 100 == 0) {
+        if ((year % 4 == 0 && year%100!=0)|| year % 400 == 0) {
             //闰年
             for (int i = 1; i < month; i++) {
                 dayOfYear += daysOfMonthLeap[i - 1];
