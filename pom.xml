@@ -26,10 +26,9 @@
         <module>now-code</module>
         <module>leet-code</module>
         <module>my-code</module>
-	<module>java-aop</module>
-	<module>mybatis-test</module>
+	    <module>java-aop</module>
+	    <module>mybatis-test</module>
         <module>spring-test</module>
-        <module>easyexcel-test</module>
         <module>easyexcel-test</module>
         <module>elasticsearch-test</module>
 
@@ -65,6 +64,11 @@
                 <version>1.16.0</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.11.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
