@@ -1,5 +1,3 @@
-package com.demo.io;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;

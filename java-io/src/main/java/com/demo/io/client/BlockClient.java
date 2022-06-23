@@ -1,4 +1,4 @@
-package com.demo.io;
+package com.demo.io.client;
 
 import lombok.extern.slf4j.Slf4j;
 

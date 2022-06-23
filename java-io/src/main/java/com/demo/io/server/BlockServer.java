@@ -1,9 +1,9 @@
-package com.demo.io;
+package com.demo.io.server;
 
-import javax.xml.ws.Response;
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.*;
-import java.nio.Buffer;
 
 /**
  * <p><b>Description:</b>

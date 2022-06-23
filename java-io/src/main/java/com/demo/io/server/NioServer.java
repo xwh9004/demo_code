@@ -1,14 +1,11 @@
-package com.demo.io;
+package com.demo.io.server;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
 import java.util.Iterator;
-import java.util.Scanner;
-import java.util.Set;
 
 /**
  * <p><b>Description:</b>
