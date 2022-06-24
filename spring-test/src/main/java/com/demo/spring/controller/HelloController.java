@@ -19,4 +19,9 @@ public class HelloController {
         System.out.println("耗时："+ (System.currentTimeMillis() - start)+"ms");
         return "helloworld";
     }
+
+    @RequestMapping(path = "ok", method = RequestMethod.GET)
+    public String hi() {
+        return "ok";
+    }
 }
