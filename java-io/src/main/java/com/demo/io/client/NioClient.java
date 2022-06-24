@@ -1,8 +1,11 @@
 package com.demo.io.client;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
@@ -24,7 +27,6 @@ public class NioClient {
 
     SocketChannel client;
 
-    ByteBuffer buffer = ByteBuffer.allocate(1024);
 
     public static void main(String[] args) throws IOException {
         NioClient client = new NioClient();
@@ -56,9 +58,6 @@ public class NioClient {
                 if (selectionKey.isConnectable()) {
                     doConnect(selectionKey);
                 }
-                if (selectionKey.isAcceptable()) {
-                    doAccept(selectionKey);
-                }
                 if (selectionKey.isReadable()) {
                     doRead(selectionKey);
                 }
@@ -72,24 +71,16 @@ public class NioClient {
 
     private void doConnect(SelectionKey selectionKey) throws IOException {
 
-        System.out.println("client connect");
-
         client = (SocketChannel) selectionKey.channel();
         // 判断此通道上是否正在进行连接操作。
         // 完成套接字通道的连接过程。
-        buffer.clear();
         if (client.isConnectionPending()) {
+            System.out.println("server connecting...");
             client.finishConnect();
-            int len = client.read(buffer);
-            while(len>0){
-                String  receiveText = new String(buffer.array(), 0, len);
-                System.out.println("from server --:" + receiveText);
-                len = client.read(buffer);
-            }
             System.out.println("server connected!");
-            client.write(ByteBuffer.wrap(new String("Hello Server!").getBytes("UTF-8")));
+            client.register(selector, SelectionKey.OP_WRITE);
+            System.out.println("client  OP_WRITE");
         }
-        client.register(selector, SelectionKey.OP_READ);
     }
 
     //在服务端有效
@@ -103,29 +94,53 @@ public class NioClient {
         // 返回为之创建此键的通道。
         server = (SocketChannel) selectionKey.channel();
         //将缓冲区清空以备下次读取
-        buffer.clear();
+        ByteBuffer buffer = ByteBuffer.allocate(1024*1024);
         //读取服务器发送来的数据到缓冲区中
-        StringBuilder sb =  new StringBuilder();
-        int count = server.read(buffer);
+        StringBuilder sb = new StringBuilder();
+//        int count = server.read(buffer);
+        long count =0;
+         count = zeroCopy(server,count,1024*1024);
+        long total = count;
         while (count > 0) {
-            String  receiveText = new String(buffer.array(), 0, count);
-            sb.append(receiveText);
-            count = server.read(buffer);
+//            String receiveText = new String(buffer.array(), 0, count);
+//            sb.append(receiveText);
+
+//            count = server.read(buffer);
+            count =zeroCopy(server,total,1024*1024);
+            total += count;
+            System.out.println("from server bytes total =" + total);
+
         }
         System.out.println("from server:" + sb.toString());
         server.register(selector, SelectionKey.OP_WRITE);
+        System.out.println("client  OP_WRITE");
+    }
+    public static long zeroCopy(SocketChannel channel,long off,int size) {
+        String path = "D:\\test\\我的照片\\许俊屹";
+        String fileName = "2022060701";
+        String suffix = "copy.jpg";
+        long count =-1;
+        String to = path.concat("\\").concat(fileName).concat(suffix);
+        try (FileChannel fileChannel = new RandomAccessFile(to, "rw").getChannel();) {
+            count =fileChannel.transferFrom(channel,off,size);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+        return count;
     }
 
     private void doWrite(SelectionKey selectionKey) throws IOException {
         //写数据给client
-        Scanner scanner =new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in, "UTF-8");
         System.out.println("client send:");
-        String message =scanner.nextLine();
+        String message = scanner.nextLine();
         client = (SocketChannel) selectionKey.channel();
-        buffer.clear();
-        buffer.put(new String(message).getBytes("UTF-8"));
-        client.write(buffer);
+        byte[] bytes = message.getBytes("UTF-8");
+        client.write(ByteBuffer.wrap(bytes));
         //注册selector
         client.register(selectionKey.selector(), SelectionKey.OP_READ);
+        System.out.println("client  OP_READ");
     }
 }
