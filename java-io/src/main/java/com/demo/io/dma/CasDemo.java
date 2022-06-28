@@ -3,14 +3,49 @@ package com.demo.io.dma;
 public class CasDemo {
 
     public static void main(String[] args) throws InterruptedException {
+        onlySetPersonAge();
         twoThreadPersonFlushCacheLine(false);
         //时间最长
         twoThreadPersonFlushCacheLine(true);
+
+        onlySetChildrenAge();
         twoThreadChildrenFlushCacheLine(false);
         twoThreadChildrenFlushCacheLine(true);
 
     }
 
+    private static void onlySetPersonAge() {
+        Student student = new Student();
+        Student student2 = new Student();
+        student.setAge(42);
+
+        //read 1000000000 times;
+        long count = 0;
+        long max = 1000000000;
+        long start = System.currentTimeMillis();
+        while (count++ < max) {
+            long age = student.getAge();
+            student2.setAge(age);
+        }
+        long end = System.currentTimeMillis();
+        System.out.println("only set student  耗时 " + (end - start) + "ms");
+    }
+    private static void onlySetChildrenAge() {
+        Children children = new Children();
+        Children children2 = new Children();
+        children.setAge(42);
+
+        //read 1000000000 times;
+        long count = 0;
+        long max = 1000000000;
+        long start = System.currentTimeMillis();
+        while (count++ < max) {
+            long age = children.getAge();
+            children2.setAge(age);
+        }
+        long end = System.currentTimeMillis();
+        System.out.println("only set children  耗时 " + (end - start) + "ms");
+    }
     private static void twoThreadPersonFlushCacheLine(boolean overwrite) throws InterruptedException {
         Student student = new Student();
         Student student2 = new Student();
