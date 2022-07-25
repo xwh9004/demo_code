@@ -31,6 +31,7 @@
         <module>spring-test</module>
         <module>easyexcel-test</module>
         <module>elasticsearch-test</module>
+        <module>mq-learning</module>
 
     </modules>
     <packaging>pom</packaging>
@@ -45,6 +46,11 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-jdbc</artifactId>
+                <version>2.5.3</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-amqp</artifactId>
                 <version>2.5.3</version>
             </dependency>
             <dependency>
