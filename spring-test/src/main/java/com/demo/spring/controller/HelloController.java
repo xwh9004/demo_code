@@ -17,9 +17,8 @@ public class HelloController {
     public String hi(@RequestParam(value = "fileName") String name,@RequestParam(value = "size") int size) {
         String fileName = "D://excel/"+name+".xlsx";
         long start =System.currentTimeMillis();
-//        ExcelUtil.read(fileName,size);
         System.out.println("耗时："+ (System.currentTimeMillis() - start)+"ms");
-        return "helloworld";
+        return "hello world";
     }
 
     @RequestMapping(path = "ok", method = RequestMethod.GET)
