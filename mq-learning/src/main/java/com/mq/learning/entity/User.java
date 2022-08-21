@@ -1,4 +1,4 @@
-package com.test.mq.learning.entity;
+package com.mq.learning.entity;
 
 import lombok.Data;
 

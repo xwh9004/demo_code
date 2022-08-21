@@ -1,4 +1,4 @@
-package com.test.mq.learning.spring;
+package com.mq.learning.spring;
 
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.test.mq.learning.client;
+package com.mq.learning.client;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
