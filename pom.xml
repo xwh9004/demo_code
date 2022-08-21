@@ -15,23 +15,16 @@
     <artifactId>demo_code</artifactId>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>java-thread</module>
+        <module>java-learning</module>
         <module>system-truck</module>
-        <module>java-io</module>
-        <module>java-jvm</module>
-        <module>java-stream</module>
-        <module>redis-client-demo</module>
-        <module>sort-util</module>
-        <module>kafka-demo</module>
-        <module>now-code</module>
-        <module>leet-code</module>
+        <module>redis-learning</module>
+        <module>kafka-learning</module>
         <module>my-code</module>
-	    <module>java-aop</module>
-	    <module>mybatis-test</module>
-        <module>spring-test</module>
-        <module>easyexcel-test</module>
-        <module>elasticsearch-test</module>
+	    <module>mybatis-learning</module>
+        <module>spring-learning</module>
+        <module>es-learning</module>
         <module>mq-learning</module>
+        <module>excel-learning</module>
 
     </modules>
     <packaging>pom</packaging>
