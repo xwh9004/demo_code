@@ -1,5 +1,6 @@
 package com.test.mq.learning.spring;
 
+import com.rabbitmq.client.Channel;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -70,6 +71,40 @@ public class RabbitMqConfig {
         return rabbitTemplate;
     }
 
+//    @Bean
+//    public SimpleMessageListenerContainer simpleMessageListenerContainer(ConnectionFactory connectionFactory){
+//        SimpleMessageListenerContainer listenerContainer = new SimpleMessageListenerContainer();
+//        final String queueName = "test.direct.queue";
+//        listenerContainer.setQueueNames(queueName);
+//        listenerContainer.setAcknowledgeMode(AcknowledgeMode.MANUAL);
+//        listenerContainer.setConcurrentConsumers(1);
+//        listenerContainer.setMaxConcurrentConsumers(3);
+//        listenerContainer.setConnectionFactory(connectionFactory);
+//        listenerContainer.setMessageListener(new MyMessageListener());
+//        return listenerContainer;
+//    }
+
+
+//    @Bean
+//    public SimpleMessageListenerContainer simpleMessageListenerContainer(ConnectionFactory connectionFactory){
+//        SimpleMessageListenerContainer listenerContainer = new SimpleMessageListenerContainer();
+//        final String queueName = "test.direct.queue";
+//        listenerContainer.setQueueNames(queueName);
+//        listenerContainer.setAcknowledgeMode(AcknowledgeMode.MANUAL);
+//        listenerContainer.setConcurrentConsumers(1);
+//        listenerContainer.setMaxConcurrentConsumers(3);
+//        listenerContainer.setConnectionFactory(connectionFactory);
+//        MessageListenerAdapter adapter = new MessageListenerAdapter();
+//        adapter.setDelegate(new MyMessageConsumer());
+//        listenerContainer.setMessageListener(adapter);
+//        return listenerContainer;
+//    }
+
+    /**
+     * 自定义消费者
+     * @param connectionFactory
+     * @return
+     */
     @Bean
     public SimpleMessageListenerContainer simpleMessageListenerContainer(ConnectionFactory connectionFactory){
         SimpleMessageListenerContainer listenerContainer = new SimpleMessageListenerContainer();
@@ -79,12 +114,14 @@ public class RabbitMqConfig {
         listenerContainer.setConcurrentConsumers(1);
         listenerContainer.setMaxConcurrentConsumers(3);
         listenerContainer.setConnectionFactory(connectionFactory);
-//        listenerContainer.setMessageListener(new MyMessageListener());
-//        listenerContainer.setMessageListener();
-        MessageListenerAdapter adapter = new MessageListenerAdapter();
+        MessageListenerAdapter adapter = new MessageListenerAdapter() {
+            @Override
+            protected Object[] buildListenerArguments(Object extractedMessage, Channel channel, Message message) {
+                return new Object[] { extractedMessage,channel,message };
+            }
+        };
         adapter.setDelegate(new MyMessageConsumer());
         listenerContainer.setMessageListener(adapter);
         return listenerContainer;
-
     }
 }
