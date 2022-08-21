@@ -135,6 +135,7 @@ public class RabbitMqConfig {
     public RabbitListenerContainerFactory containerFactory(ConnectionFactory connectionFactory) {
         AbstractRabbitListenerContainerFactory containerFactory = new SimpleRabbitListenerContainerFactory();
         containerFactory.setConnectionFactory(connectionFactory);
+        containerFactory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
         return containerFactory;
     }
 
@@ -150,7 +151,7 @@ public class RabbitMqConfig {
                 endpointRegistry.setQueueNames(queueName);
                 endpointRegistry.setId(UUID.randomUUID().toString());
                 endpointRegistry.setMessageListener(new MyMessageListener());
-                endpointRegistry.setAckMode(AcknowledgeMode.MANUAL);
+//                endpointRegistry.setAckMode(AcknowledgeMode.MANUAL);
                 registrar.registerEndpoint(endpointRegistry);
                 //注册多个监听
 //                SimpleRabbitListenerEndpoint endpointRegistry1 = new SimpleRabbitListenerEndpoint();
