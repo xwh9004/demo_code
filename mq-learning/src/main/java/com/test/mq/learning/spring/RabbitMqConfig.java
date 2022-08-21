@@ -6,6 +6,7 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -78,7 +79,11 @@ public class RabbitMqConfig {
         listenerContainer.setConcurrentConsumers(1);
         listenerContainer.setMaxConcurrentConsumers(3);
         listenerContainer.setConnectionFactory(connectionFactory);
-        listenerContainer.setMessageListener(new MyMessageListener());
+//        listenerContainer.setMessageListener(new MyMessageListener());
+//        listenerContainer.setMessageListener();
+        MessageListenerAdapter adapter = new MessageListenerAdapter();
+        adapter.setDelegate(new MyMessageConsumer());
+        listenerContainer.setMessageListener(adapter);
         return listenerContainer;
 
     }
