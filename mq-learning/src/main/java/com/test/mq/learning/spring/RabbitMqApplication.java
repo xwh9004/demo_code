@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.connection.Connection;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -21,6 +22,7 @@ import java.util.concurrent.TimeUnit;
  * @date: 2022/8/21 9:58
  * @description:
  */
+@EnableRabbit
 @Slf4j
 @ComponentScan
 public class RabbitMqApplication {
@@ -29,14 +31,8 @@ public class RabbitMqApplication {
     public static void main(String[] args) {
 //        publishMessage();
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(RabbitMqApplication.class);
-
-        final SimpleMessageListenerContainer listenerContainer = context.getBean(SimpleMessageListenerContainer.class);
-
-
         //接收string 消息
-
-
-        TimeUnit.SECONDS.sleep(10);
+        TimeUnit.SECONDS.sleep(60);
         context.close();
 
     }

@@ -1,15 +1,22 @@
 package com.test.mq.learning.spring;
 
-import com.rabbitmq.client.Channel;
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
+import org.springframework.amqp.rabbit.config.AbstractRabbitListenerContainerFactory;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerEndpoint;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
+import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistrar;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.UUID;
 
 /**
  * @author: xwh90
@@ -57,15 +64,15 @@ public class RabbitMqConfig {
     }
 
     @Bean
-    public Binding binding(){
+    public Binding binding() {
         String exchangeName = "test.direct.exchange";
         String queueName = "test.direct.queue";
         final String routKey = "test.direct.message";
-        return new Binding(queueName,Binding.DestinationType.QUEUE,exchangeName,routKey,null);
+        return new Binding(queueName, Binding.DestinationType.QUEUE, exchangeName, routKey, null);
     }
 
     @Bean
-    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory){
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate();
         rabbitTemplate.setConnectionFactory(connectionFactory);
         return rabbitTemplate;
@@ -85,6 +92,26 @@ public class RabbitMqConfig {
 //    }
 
 
+//        @Bean
+//        public SimpleMessageListenerContainer simpleMessageListenerContainer(ConnectionFactory connectionFactory) {
+//            SimpleMessageListenerContainer listenerContainer = new SimpleMessageListenerContainer();
+//            final String queueName = "test.direct.queue";
+//            listenerContainer.setQueueNames(queueName);
+//            listenerContainer.setAcknowledgeMode(AcknowledgeMode.MANUAL);
+//            listenerContainer.setConcurrentConsumers(1);
+//            listenerContainer.setMaxConcurrentConsumers(3);
+//            listenerContainer.setConnectionFactory(connectionFactory);
+//            MessageListenerAdapter adapter = new MessageListenerAdapter();
+//            adapter.setDelegate(new MyMessageConsumer());
+//            listenerContainer.setMessageListener(adapter);
+//            return listenerContainer;
+//        }
+//
+//    /**
+//     * 自定义消费者
+//     * @param connectionFactory
+//     * @return
+//     */
 //    @Bean
 //    public SimpleMessageListenerContainer simpleMessageListenerContainer(ConnectionFactory connectionFactory){
 //        SimpleMessageListenerContainer listenerContainer = new SimpleMessageListenerContainer();
@@ -94,34 +121,46 @@ public class RabbitMqConfig {
 //        listenerContainer.setConcurrentConsumers(1);
 //        listenerContainer.setMaxConcurrentConsumers(3);
 //        listenerContainer.setConnectionFactory(connectionFactory);
-//        MessageListenerAdapter adapter = new MessageListenerAdapter();
+//        MessageListenerAdapter adapter = new MessageListenerAdapter() {
+//            @Override
+//            protected Object[] buildListenerArguments(Object extractedMessage, Channel channel, Message message) {
+//                return new Object[] { extractedMessage,channel,message };
+//            }
+//        };
 //        adapter.setDelegate(new MyMessageConsumer());
 //        listenerContainer.setMessageListener(adapter);
 //        return listenerContainer;
 //    }
-
-    /**
-     * 自定义消费者
-     * @param connectionFactory
-     * @return
-     */
     @Bean
-    public SimpleMessageListenerContainer simpleMessageListenerContainer(ConnectionFactory connectionFactory){
-        SimpleMessageListenerContainer listenerContainer = new SimpleMessageListenerContainer();
+    public RabbitListenerContainerFactory containerFactory(ConnectionFactory connectionFactory) {
+        AbstractRabbitListenerContainerFactory containerFactory = new SimpleRabbitListenerContainerFactory();
+        containerFactory.setConnectionFactory(connectionFactory);
+        return containerFactory;
+    }
+
+    @Bean
+    public RabbitListenerConfigurer rabbitListenerConfigurer(final RabbitListenerContainerFactory containerFactory) {
         final String queueName = "test.direct.queue";
-        listenerContainer.setQueueNames(queueName);
-        listenerContainer.setAcknowledgeMode(AcknowledgeMode.MANUAL);
-        listenerContainer.setConcurrentConsumers(1);
-        listenerContainer.setMaxConcurrentConsumers(3);
-        listenerContainer.setConnectionFactory(connectionFactory);
-        MessageListenerAdapter adapter = new MessageListenerAdapter() {
+
+        RabbitListenerConfigurer rabbitListenerConfigurer = new RabbitListenerConfigurer() {
             @Override
-            protected Object[] buildListenerArguments(Object extractedMessage, Channel channel, Message message) {
-                return new Object[] { extractedMessage,channel,message };
+            public void configureRabbitListeners(RabbitListenerEndpointRegistrar registrar) {
+                registrar.setContainerFactory(containerFactory);
+                SimpleRabbitListenerEndpoint endpointRegistry = new SimpleRabbitListenerEndpoint();
+                endpointRegistry.setQueueNames(queueName);
+                endpointRegistry.setId(UUID.randomUUID().toString());
+                endpointRegistry.setMessageListener(new MyMessageListener());
+                endpointRegistry.setAckMode(AcknowledgeMode.MANUAL);
+                registrar.registerEndpoint(endpointRegistry);
+                //注册多个监听
+//                SimpleRabbitListenerEndpoint endpointRegistry1 = new SimpleRabbitListenerEndpoint();
+//                endpointRegistry1.setQueueNames(queueName);
+//                endpointRegistry1.setId(UUID.randomUUID().toString());
+//                endpointRegistry1.setMessageListener(new MyMessageListener());
+//                endpointRegistry1.setAckMode(AcknowledgeMode.MANUAL);
+                registrar.registerEndpoint(endpointRegistry);
             }
         };
-        adapter.setDelegate(new MyMessageConsumer());
-        listenerContainer.setMessageListener(adapter);
-        return listenerContainer;
+        return rabbitListenerConfigurer;
     }
 }
