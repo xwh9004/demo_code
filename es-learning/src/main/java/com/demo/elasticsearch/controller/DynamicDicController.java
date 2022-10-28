@@ -76,4 +76,24 @@ public class DynamicDicController {
             log.error("获取输出流出错", e);
         }
     }
+
+    @GetMapping("/ext_synonym")
+    public void synonymWord(HttpServletRequest request, HttpServletResponse response) {
+        log.info("开始获取最新的同义词词典");
+
+        try (ServletOutputStream out = response.getOutputStream();) {
+            File file = ResourceUtils.getFile("classpath:ext_synonym.dic");
+            response.addHeader("Last-Modified", String.valueOf(file.lastModified()));
+            response.addHeader("ETag", "v1.0");
+            response.addHeader("Content-Type", "text/plain;charset=UTF-8");
+            StringBuilder sb = new StringBuilder();
+            List<String> contents = FileUtils.readLines(file, "UTF-8");
+            contents.stream().forEach(item -> sb.append(item).append("\n"));
+            out.write(sb.toString().getBytes("UTF-8"));
+            out.flush();
+            log.info("获取最新的同义词词典完成");
+        } catch (IOException e) {
+            log.error("获取输出流出错", e);
+        }
+    }
 }
