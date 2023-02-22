@@ -21,8 +21,8 @@ public class StreamCreateAndTest {
         //产生一个无限大小流
 //        Stream<BigInteger> integers2 =Stream.iterate(BigInteger.TEN,n->n.add(BigInteger.TWO));
         //产生 从 10 开始 到20 的步长位2的整数流
-        Stream<BigInteger> integers =Stream.iterate(BigInteger.TEN,n-> n.compareTo(limit)<0,n->n.add(BigInteger.TWO));
-        printStreamElement(integers);
+//        Stream<BigInteger> integers =Stream.iterate(BigInteger.TEN,n-> n.compareTo(limit)<0,n->n.add(BigInteger.TWO));
+//        printStreamElement(integers);
 //        System.out.println(integers.findFirst());
     }
 

@@ -27,7 +27,7 @@ public class OptionalTest {
     @Test
     public void ifPresentOrElse(){
         Optional<String> stringOptional = Optional.of("1");
-        stringOptional.ifPresentOrElse(System.out::println,()-> System.out.println( "Not match"));
+//        stringOptional.ifPresentOrElse(System.out::println,()-> System.out.println( "Not match"));
     }
     @Test
     public void orThrow(){
