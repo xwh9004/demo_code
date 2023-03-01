@@ -42,7 +42,7 @@ public class NioClient {
         selector = Selector.open();
         // 注册连接服务端socket动作
         socketChannel.register(selector, SelectionKey.OP_CONNECT);
-        socketChannel.connect(new InetSocketAddress(8090));
+        socketChannel.connect(new InetSocketAddress(port));
         System.out.println("准备连接服务器");
     }
 
@@ -94,19 +94,20 @@ public class NioClient {
         // 返回为之创建此键的通道。
         server = (SocketChannel) selectionKey.channel();
         //将缓冲区清空以备下次读取
-        ByteBuffer buffer = ByteBuffer.allocate(1024*1024);
+        ByteBuffer buffer = ByteBuffer.allocate(1024 * 1024);
         //读取服务器发送来的数据到缓冲区中
         StringBuilder sb = new StringBuilder();
-//        int count = server.read(buffer);
-        long count =0;
-         count = zeroCopy(server,count,1024*1024);
+        long count = 0;
+        count = server.read(buffer);
+
+//        count = zeroCopy(server, count, 1024 * 1024);
         long total = count;
         while (count > 0) {
-//            String receiveText = new String(buffer.array(), 0, count);
-//            sb.append(receiveText);
+            String receiveText = new String(buffer.array(), 0, (int) count);
+            sb.append(receiveText);
 
-//            count = server.read(buffer);
-            count =zeroCopy(server,total,1024*1024);
+            count = server.read(buffer);
+//            count = zeroCopy(server, total, 1024 * 1024);
             total += count;
             System.out.println("from server bytes total =" + total);
 
@@ -115,14 +116,15 @@ public class NioClient {
         server.register(selector, SelectionKey.OP_WRITE);
         System.out.println("client  OP_WRITE");
     }
-    public static long zeroCopy(SocketChannel channel,long off,int size) {
+
+    public static long zeroCopy(SocketChannel channel, long off, int size) {
         String path = "D:\\test\\我的照片\\许俊屹";
         String fileName = "2022060701";
         String suffix = "copy.jpg";
-        long count =-1;
+        long count = -1;
         String to = path.concat("\\").concat(fileName).concat(suffix);
         try (FileChannel fileChannel = new RandomAccessFile(to, "rw").getChannel();) {
-            count =fileChannel.transferFrom(channel,off,size);
+            count = fileChannel.transferFrom(channel, off, size);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException ioException) {

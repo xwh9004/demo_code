@@ -21,9 +21,11 @@ import java.util.Iterator;
  */
 public class NioServer {
 
-    private Selector selector;
     private StringBuilder message = new StringBuilder();
 
+    private ServerSocketChannel serverSocketChannel;
+
+    private Selector selector;
 
     public static void main(String[] args) throws IOException {
         NioServer server = new NioServer();
@@ -56,49 +58,54 @@ public class NioServer {
     private void initServer(int port) throws IOException {
 
         // 获得一个ServerSocketChannel通道
-        ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+        serverSocketChannel = ServerSocketChannel.open();
         // 设置通道为非阻塞
         serverSocketChannel.configureBlocking(false);
         // 将该通道对应的ServerSocket绑定到port端口
         ServerSocket serverSocket = serverSocketChannel.socket();
         serverSocket.bind(new InetSocketAddress(port));
 
-        selector = Selector.open();
 
-        serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
-        System.out.println("server OP_ACCEPT");
     }
 
 
     public void listener() {
         System.out.println("------server started--------");
-        System.out.println("------waiting client to connect-------");
-        try {
-            while (true) {
-                selector.select();  //如果没有事件，则一致阻塞
-                Iterator<SelectionKey> keyIterator = selector.selectedKeys().iterator();
-                //依次处理事件
-                while (keyIterator.hasNext()) {
-                    SelectionKey key = keyIterator.next();
-                    if (key.isConnectable()) {
-                        doConnect(key);
+        while (true) {
+            try {
+                System.out.println("------waiting client to connect-------");
+                selector = Selector.open();
+                serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
+                while (true) {
+                    selector.select();  //如果没有事件，则一致阻塞
+                    System.out.println("server OP_CONNECT");
+                    Iterator<SelectionKey> keyIterator = selector.selectedKeys().iterator();
+                    //依次处理事件
+                    while (keyIterator.hasNext()) {
+                        SelectionKey key = keyIterator.next();
+                        if (key.isConnectable()) {
+                            doConnect(key);
+                        }
+                        // 客户端请求连接事件
+                        if (key.isAcceptable()) {
+                            doAccept(key);
+                        }
+                        if (key.isReadable()) {
+                            doRead(key);
+                        }
+                        if (key.isWritable()) {
+                            doWrite(key);
+                        }
+                        //处理完后移除当前使用的key
+                        keyIterator.remove();
                     }
-                    // 客户端请求连接事件
-                    if (key.isAcceptable()) {
-                        doAccept(key);
-                    }
-                    if (key.isReadable()) {
-                        doRead(key);
-                    }
-                    if (key.isWritable()) {
-                        doWrite(key);
-                    }
-                    //处理完后移除当前使用的key
-                    keyIterator.remove();
+                }
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+                if (!serverSocketChannel.isOpen()) {
+                    System.out.println("链接关闭");
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
     }
@@ -170,18 +177,19 @@ public class NioServer {
         message.setLength(0);
         //将缓冲区清空以备下次读取
         ByteBuffer readBuffer = ByteBuffer.allocate(1024);
-        int count = channel.read(readBuffer);
+        int count = 0;
+        count = channel.read(readBuffer);
         if (count > 0) {
             String receiveText = new String(readBuffer.array(), 0, count);
             message.append(receiveText);
         }
         System.out.println("from client:" + message.toString());
-        channel.register(selector, SelectionKey.OP_WRITE);
+        channel.register(selectionKey.selector(), SelectionKey.OP_WRITE);
         System.out.println("server OP_WRITE");
-
     }
 
     private void doConnect(SelectionKey selectionKey) {
+
         System.out.println("----server doConnect----");
     }
 
@@ -194,6 +202,6 @@ public class NioServer {
 //        //注册selector
         socketChannel.register(selectionKey.selector(), SelectionKey.OP_READ);
         System.out.println("server OP_READ");
-        System.out.println("client " + socketChannel.getLocalAddress() + " connected successfully！");
+        System.out.println("client " + socketChannel.getRemoteAddress() + " connected successfully！");
     }
 }
