@@ -10,6 +10,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
+import java.util.Set;
 
 /**
  * <p><b>Description:</b>
@@ -73,22 +74,14 @@ public class NioServer {
     public void listener() {
         System.out.println("------server started--------");
         openSelector();
-
-//                selector = Selector.open();
-//            serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
         while (true) {
-            Iterator<SelectionKey> keyIterator = null;
             try {
                 selector.select();  //如果没有事件，则一致阻塞
-                keyIterator = selector.selectedKeys().iterator();
+                handleKeys();
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
 
-            //依次处理事件
-            while (keyIterator.hasNext()) {
-                handleKey(keyIterator);
-            }
         }
     }
 
@@ -102,37 +95,43 @@ public class NioServer {
         }
     }
 
-    private void handleKey(Iterator<SelectionKey> keyIterator) {
-        SelectionKey key = keyIterator.next();
-        try {
-            if (key.isConnectable()) {
-                doConnect(key);
-            }
-            // 客户端请求连接事件
-            if (key.isAcceptable()) {
-                doAccept(key);
-            }
-            if (key.isReadable()) {
-                doRead(key);
-            }
-            if (key.isWritable()) {
-                doWrite(key);
-            }
-            //处理完后移除当前使用的key
-            keyIterator.remove();
-        } catch (Exception e) {
-            final SelectableChannel channel = key.channel();
-            if (channel instanceof SocketChannel) {
-                SocketChannel socketChannel = (SocketChannel) channel;
-                try {
-                    final SocketAddress remoteAddress = socketChannel.getRemoteAddress();
-                    socketChannel.close();
-                    System.out.println("client " + remoteAddress + " disconnected！");
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
+    private void handleKeys() {
+        Set<SelectionKey> selectKeys = selector.selectedKeys();
+        Iterator<SelectionKey> keyIterator = selectKeys.iterator();
+        //依次处理事件
+        while (keyIterator.hasNext()) {
+            SelectionKey key = keyIterator.next();
+            try {
+                if (key.isConnectable()) {
+                    doConnect(key);
+                }
+                // 客户端请求连接事件
+                if (key.isAcceptable()) {
+                    doAccept(key);
+                }
+                if (key.isReadable()) {
+                    doRead(key);
+                }
+                if (key.isWritable()) {
+                    doWrite(key);
+                }
+                //处理完后移除当前使用的key
+                keyIterator.remove();
+            } catch (Exception e) {
+                final SelectableChannel channel = key.channel();
+                if (channel instanceof SocketChannel) {
+                    SocketChannel socketChannel = (SocketChannel) channel;
+                    try {
+                        final SocketAddress remoteAddress = socketChannel.getRemoteAddress();
+                        socketChannel.close();
+                        System.out.println("client " + remoteAddress + " disconnected！");
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
                 }
             }
         }
+
     }
 
     private void doWrite(SelectionKey selectionKey) throws IOException {
@@ -197,7 +196,7 @@ public class NioServer {
 
     private void doRead(SelectionKey selectionKey) throws IOException {
 
-        // 返回为之创建此键的通道。
+        // 返回selectKey关联的传输通道。
         SocketChannel channel = (SocketChannel) selectionKey.channel();
         //读取服务器发送来的数据到缓冲区中
         message.setLength(0);
