@@ -1,6 +1,7 @@
 package com.learning.io.client;
 
 import com.learning.util.DataTimeUtil;
+import com.learning.util.Printer;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -12,7 +13,7 @@ import java.util.Scanner;
 /**
  * @author: xwh90
  * @date: 2023/4/21 14:11
- * @description: UPD
+ * @description: UPD client
  */
 public class UPDClient {
     public void send() throws IOException {
@@ -25,9 +26,9 @@ public class UPDClient {
 
         final Scanner scanner = new Scanner(System.in);
 
-        System.out.println("UDP客户端启动成功");
+        Printer.info("UDP客户端启动成功");
 
-        System.out.println("请输入发送内容：");
+        Printer.info("请输入发送内容：");
 
         while (scanner.hasNext()){
             final String line = scanner.nextLine();
