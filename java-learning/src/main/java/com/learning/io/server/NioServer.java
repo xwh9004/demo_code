@@ -222,7 +222,8 @@ public class NioServer {
     //建立连接的时候触发
     private void doAccept(SelectionKey selectionKey) throws IOException {
         System.out.println("server accepted");
-        SocketChannel socketChannel = ((ServerSocketChannel) selectionKey.channel()).accept();
+        ServerSocketChannel serverChannel = (ServerSocketChannel) selectionKey.channel();
+        SocketChannel socketChannel = serverChannel.accept();
         //非阻塞
         socketChannel.configureBlocking(false);
 //        //注册selector
