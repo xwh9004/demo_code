@@ -76,7 +76,7 @@ public class NioSendClient {
         //发送文件名称
         final ByteBuffer fileNameBuffer = charset.encode(fileName);
         final ByteBuffer buffer = ByteBuffer.allocate(1024);
-        final int fileNameLength = fileNameBuffer.limit();
+        final int fileNameLength = fileNameBuffer.capacity();
 
         //发送文件名称长度
         buffer.putInt(fileNameLength);

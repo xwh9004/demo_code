@@ -30,7 +30,7 @@ public class NioClient {
 
     public static void main(String[] args) throws IOException {
         NioClient client = new NioClient();
-        client.initClient(8090);
+        client.initClient(18890);
         client.listener();
     }
 
@@ -42,7 +42,7 @@ public class NioClient {
         selector = Selector.open();
         // 注册连接服务端socket动作
         socketChannel.register(selector, SelectionKey.OP_CONNECT);
-        socketChannel.connect(new InetSocketAddress(port));
+        socketChannel.connect(new InetSocketAddress("localhost",port));
         System.out.println("准备连接服务器");
     }
 

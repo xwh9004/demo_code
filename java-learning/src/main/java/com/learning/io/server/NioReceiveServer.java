@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.ServerSocket;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
 import java.nio.charset.Charset;
@@ -52,9 +53,11 @@ public class NioReceiveServer {
 
         final ServerSocketChannel serverChannel = ServerSocketChannel.open();
 
-        serverChannel.bind(new InetSocketAddress("localhost", 18899));
+        final ServerSocket serverSocket = serverChannel.socket();
 
         serverChannel.configureBlocking(false);
+
+        serverSocket.bind(new InetSocketAddress("localhost", 18899));
 
         serverChannel.register(selector, SelectionKey.OP_ACCEPT);
 
@@ -91,6 +94,7 @@ public class NioReceiveServer {
         int num = 0;
         try {
             buffer.clear();
+            //此处容易出现半包，粘包现象
             while ((num = socketChannel.read(buffer)) > 0) {
                 buffer.flip();
                 if (client.fileName == null) {
@@ -112,7 +116,7 @@ public class NioReceiveServer {
                     Printer.info("NIO 传输目标路径：%s", directory.getAbsolutePath());
                     String fullName = directory.getAbsolutePath() + File.separatorChar + fileName;
                     Printer.info("NIO 传输目标文件：%s", fullName);
-                    File file = new File(RECEIVE_PATH,fileName);
+                    File file = new File(fullName.trim());
                     if (!file.exists()) {
                         file.createNewFile();
                     }
