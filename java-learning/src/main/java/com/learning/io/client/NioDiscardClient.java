@@ -24,14 +24,15 @@ public class NioDiscardClient {
         final SocketChannel socketChannel = SocketChannel.open(address);
         //设置非阻塞
         socketChannel.configureBlocking(false);
-        while (socketChannel.finishConnect()){
-            System.out.println("客户端连接完成");
-            final ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
-            byteBuffer.put("hello server".getBytes(StandardCharsets.UTF_8));
-            byteBuffer.flip();
-            socketChannel.write(byteBuffer);
-            socketChannel.shutdownOutput();
-            socketChannel.close();
-        }
+        while (!socketChannel.finishConnect());
+
+        System.out.println("客户端连接完成");
+
+        final ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
+        byteBuffer.put("hello server".getBytes(StandardCharsets.UTF_8));
+        byteBuffer.flip();
+        socketChannel.write(byteBuffer);
+        socketChannel.shutdownOutput();
+        socketChannel.close();
     }
 }

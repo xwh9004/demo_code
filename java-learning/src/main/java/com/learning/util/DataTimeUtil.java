@@ -1,5 +1,7 @@
 package com.learning.util;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -9,6 +11,8 @@ import java.time.format.DateTimeFormatter;
  * @date: 2023/4/21 14:18
  * @description:
  */
+
+@Slf4j
 public class DataTimeUtil {
     public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 
@@ -18,6 +22,6 @@ public class DataTimeUtil {
     }
 
     public static void main(String[] args) {
-        System.out.println(now());
+        log.info(now());
     }
 }

@@ -1,5 +1,7 @@
 package com.learning.util;
 
+import org.slf4j.helpers.MessageFormatter;
+
 /**
  * @author: xwh90
  * @date: 2023/4/21 14:33
@@ -8,7 +10,7 @@ package com.learning.util;
 public class Printer {
 
     public static void info(String format,Object... args){
-        String info = String.format(format,args);
-        System.out.println(info);
+        final String message = MessageFormatter.arrayFormat(format, args).getMessage();
+        System.out.println(message);
     }
 }
