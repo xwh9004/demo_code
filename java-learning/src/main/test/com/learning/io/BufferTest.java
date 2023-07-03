@@ -1,4 +1,4 @@
-package com.learing.io;
+package com.learning.io;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
