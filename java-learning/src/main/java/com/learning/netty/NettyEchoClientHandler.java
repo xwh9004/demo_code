@@ -20,7 +20,7 @@ public class NettyEchoClientHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         ByteBuf byteBuf = (ByteBuf) msg;
 
-        log.info("msg type: {}",byteBuf.hasArray()?"堆内存":"直接内存");
+//        log.info("msg type: {}",byteBuf.hasArray()?"堆内存":"直接内存");
 
         final int len = byteBuf.readableBytes();
         //读出数据

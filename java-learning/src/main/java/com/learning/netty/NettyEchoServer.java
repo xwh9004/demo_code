@@ -8,7 +8,11 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.string.StringDecoder;
 import lombok.extern.slf4j.Slf4j;
+
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author: xwh90
@@ -41,12 +45,17 @@ public class NettyEchoServer {
             bootstrap.localAddress(serverPort);
             //设置通道参数
             bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
+
+            LengthFieldBasedFrameDecoder lengthFieldBasedFrameDecoder = new LengthFieldBasedFrameDecoder(1024,0,4,0,4);
+
             //装配子通道流水线
             bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 protected void initChannel(SocketChannel socketChannel) throws Exception {
                     //流水线的职责：负责管理通道中的处理器
-                    socketChannel.pipeline().addLast(NettyEchoHandler.INSTANCE);
+                    socketChannel.pipeline().addLast(lengthFieldBasedFrameDecoder);
+                    socketChannel.pipeline().addLast(new StringDecoder(StandardCharsets.UTF_8));
+                    socketChannel.pipeline().addLast(new StringProcessHandler());
                 }
             });
 
