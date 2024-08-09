@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.kimmking.javacourse</groupId>
-    <artifactId>kafka-learing</artifactId>
+    <artifactId>kafka-learning</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
