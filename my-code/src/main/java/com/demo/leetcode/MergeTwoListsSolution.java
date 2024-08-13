@@ -10,12 +10,6 @@ package com.demo.leetcode;
  */
 public class MergeTwoListsSolution {
 
-   static class ListNode {
-     int val;
-     ListNode next;
-     ListNode(int x) { val = x; }
-    }
-
 
     public static void main(String[] args) {
         MergeTwoListsSolution solution = new MergeTwoListsSolution();
